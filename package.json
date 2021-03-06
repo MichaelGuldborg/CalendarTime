@@ -34,6 +34,7 @@
   },
   "scripts": {
     "preinstall": "git config core.hooksPath hooks",
+    "lint:check": "tsc --noEmit && eslint --max-warnings=0 --ext .js,.jsx,.ts,.tsx .",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
