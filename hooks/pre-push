@@ -15,7 +15,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-print "lint:check PASSED" $GREEN
+print "PASSED lint:check" $GREEN
 
 print "Updating patch version" $BLUE
 yarn version --patch
