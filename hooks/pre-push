@@ -1,0 +1,38 @@
+#!/bin/bash
+production_branch='master'
+staging_branch='staging'
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+RED='\033[0;31m'
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+print() {
+    echo -e "$2$1${NC}"
+}
+
+# check if branch is protected (production or staging)
+if [[ $current_branch != "$production_branch" && $current_branch != "$staging_branch" ]] ; then
+    print "Branch \"${current_branch}\" is NOT protected" $GREEN
+    exit 0;
+fi
+
+print "Branch \"${current_branch}\" is protected" $YELLOW
+print "Running pre push check..." $YELLOW
+
+# check lint and type errors
+npm run lint:check
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+# check build command
+#npm run build
+#if [ $? != 0 ]; then
+#  exit 1
+#fi
+
+
+print "Pre push check passed" $GREEN
+
+exit 0

@@ -64,7 +64,6 @@ const HomePage: React.FC = () => {
 
     const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
 
-
     return (
         <div className={classes.root}>
 
