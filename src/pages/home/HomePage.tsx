@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DateInput from "../../components/inputs/DateInput";
 import {
@@ -22,26 +22,36 @@ import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
 import Grid from "@material-ui/core/Grid";
 import {useEventQueryState} from "../../useEventQueryState";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowDownIcon from 'remixicon-react/ArrowDownSLineIcon'
+import ArrowUpIcon from 'remixicon-react/ArrowUpSLineIcon'
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        padding: theme.spacing(4, 6)
     },
     toolbar: {
         display: 'flex',
         flexDirection: 'column',
-        padding: theme.spacing(4, 8),
-        marginBottom: theme.spacing(4),
+        padding: theme.spacing(2, 6),
     },
     divider: {
-        marginBottom: theme.spacing(2),
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
     },
-    selector: {
-        width: '100%',
-        // minWidth: 250,
+    paper: {
+        margin: theme.spacing(4, 6)
+    },
+    showAll: {
+        maxHeight: "2000px",
+        transition: "max-height 1s ease-in",
+    },
+    hideAll: {
+        maxHeight: "0",
+        transition: "max-height 0.50s ease-out",
+        overflow: "hidden"
     }
 }))
 
@@ -63,134 +73,148 @@ const HomePage: React.FC = () => {
 
     const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
 
+    const [showAll, setShowAll] = useState(true);
+
+
     return (
         <div className={classes.root}>
 
             <Paper className={classes.toolbar} elevation={12}>
-                <InputRow>
-                    <Grid container spacing={2}>
-                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
-                            <SelectNamed
-                                className={classes.selector}
-                                variant="outlined"
-                                options={values.calendars}
-                                value={values.calendar?.id ?? ''}
-                                onChange={onCalendarChange}
-                            />
-                        </Grid>
-                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
-                            <DateInput value={values.start} onChange={onStartChange}/>
-                        </Grid>
-                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
-                            <DateInput value={values.end} onChange={onEndChange}/>
-                        </Grid>
-
-                        <Grid item sm={12} md={12} lg={3} xl={6} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                            <Button
-                                variant="contained"
-                                color='primary'
-                                style={{height: 54}}
-                                onClick={refreshEvents}
-                            >
-                                <span style={{marginRight: 8}}>REFRESH EVENTS</span>
-                                <RefreshIcon/>
-                            </Button>
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                        <SelectNamed
+                            fullWidth
+                            variant="outlined"
+                            options={values.calendars}
+                            value={values.calendar?.id ?? ''}
+                            onChange={onCalendarChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                        <DateInput value={values.start} onChange={onStartChange}/>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                        <DateInput value={values.end} onChange={onEndChange}/>
+                    </Grid>
+                    <Grid item xs={12} sm={1} md={1} lg={1} xl={1} style={{display: 'flex'}}>
+                        <div>
+                            <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
+                                <IconButton onClick={() => setShowAll(!showAll)}>
+                                    {showAll ? <ArrowUpIcon/> : <ArrowDownIcon/>}
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                     </Grid>
 
-                </InputRow>
-
-                <Divider className={classes.divider}/>
-
-
-                <InputRow title={'Search filter:'}>
-                    <SearchInput search={values.search} onChange={setSearch}/>
-                    <div style={{display: 'flex', alignItems: 'center', marginLeft: 16}}>
-                        <Tooltip
-                            title={"Search will check if the event title, description or location contains the entered search value"}>
-                            <div><InformationIcon/></div>
-                        </Tooltip>
-                    </div>
-                </InputRow>
-
-                <InputRow title={'All Day filter:'}>
-                    <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={onAllDayOnlyChange}>
-                        <FormControlLabel
-                            value='false'
-                            control={<Radio color='primary'/>}
-                            label="Exclude All-day events"
-                        />
-                        <FormControlLabel
-                            value='true'
-                            control={<Radio color='primary'/>}
-                            label="All-day events only"
-                        />
-                    </RadioGroup>
-                </InputRow>
+                    <Grid item xs={12} sm={11} md={11} lg={2} xl={5}
+                          style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <Button
+                            variant="contained"
+                            color='primary'
+                            style={{height: 54}}
+                            onClick={refreshEvents}
+                        >
+                            <span style={{marginRight: 8}}>REFRESH EVENTS</span>
+                            <RefreshIcon/>
+                        </Button>
+                    </Grid>
+                </Grid>
 
 
-                <InputRow title={'Show total duration:'}>
-                    <FormControlLabel
-                        label=''
-                        control={<Checkbox
-                            color="primary"
-                            checked={values.showTotalDuration}
-                            onChange={onShowTotalDurationChange}
-                        />}
-                    />
-                </InputRow>
-                <InputRow title={'Additional fields:'}>
-                    <FormGroup row>
-                        {Object.keys(values.additionalFields).map(key => {
-                            return <FormControlLabel
-                                label={capitalize(key)}
-                                control={
-                                    <Checkbox
-                                        color="primary"
-                                        checked={values.additionalFields[key]}
-                                        onChange={handleFieldsChange(key)}
-                                        name={key}
-                                    />
-                                }
+                <div className={showAll ? classes.showAll : classes.hideAll}>
+                    <Divider className={classes.divider}/>
+
+
+                    <InputRow title={'Search filter:'}>
+                        <SearchInput search={values.search} onChange={setSearch}/>
+                        <div style={{display: 'flex', alignItems: 'center', marginLeft: 16}}>
+                            <Tooltip
+                                title={"Search will check if the event title, description or location contains the entered search value"}>
+                                <div><InformationIcon/></div>
+                            </Tooltip>
+                        </div>
+                    </InputRow>
+
+                    <InputRow title={'All Day filter:'}>
+                        <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={onAllDayOnlyChange}>
+                            <FormControlLabel
+                                value='false'
+                                control={<Radio color='primary'/>}
+                                label="Exclude All-day events"
                             />
-                        })}
-                    </FormGroup>
-                </InputRow>
+                            <FormControlLabel
+                                value='true'
+                                control={<Radio color='primary'/>}
+                                label="All-day events only"
+                            />
+                        </RadioGroup>
+                    </InputRow>
 
-                <Divider className={classes.divider}/>
 
-                <InputRow title={'Download format:'}>
-                    <RadioGroup row name="fileFormat" value={values.downloadFormat} onChange={onDownloadFormatChange}>
+                    <InputRow title={'Show total duration:'}>
                         <FormControlLabel
-                            value='csv'
-                            control={<Radio color='primary'/>}
-                            label="CSV"
+                            label=''
+                            control={<Checkbox
+                                color="primary"
+                                checked={values.showTotalDuration}
+                                onChange={onShowTotalDurationChange}
+                            />}
                         />
-                        <FormControlLabel
-                            value='pdf'
-                            control={<Radio color='primary'/>}
-                            label="PDF"
+                    </InputRow>
+                    <InputRow title={'Additional fields:'}>
+                        <FormGroup row>
+                            {Object.keys(values.additionalFields).map(key => {
+                                return <FormControlLabel
+                                    label={capitalize(key)}
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            checked={values.additionalFields[key]}
+                                            onChange={handleFieldsChange(key)}
+                                            name={key}
+                                        />
+                                    }
+                                />
+                            })}
+                        </FormGroup>
+                    </InputRow>
+
+                    <Divider className={classes.divider}/>
+
+                    <InputRow title={'Download format:'}>
+                        <RadioGroup row name="fileFormat" value={values.downloadFormat}
+                                    onChange={onDownloadFormatChange}>
+                            <FormControlLabel
+                                value='csv'
+                                control={<Radio color='primary'/>}
+                                label="CSV"
+                            />
+                            <FormControlLabel
+                                value='pdf'
+                                control={<Radio color='primary'/>}
+                                label="PDF"
+                            />
+                            <FormControlLabel
+                                value='html'
+                                control={<Radio color='primary'/>}
+                                label="HTML"
+                            />
+                        </RadioGroup>
+                        <div style={{flex: 1}}/>
+                        <DownloadButton
+                            events={values.events}
+                            showTotalDuration={values.showTotalDuration}
+                            totalDuration={values.totalDuration}
+                            filename={values.filename}
+                            format={values.downloadFormat}
                         />
-                        <FormControlLabel
-                            value='html'
-                            control={<Radio color='primary'/>}
-                            label="HTML"
-                        />
-                    </RadioGroup>
-                    <div style={{flex: 1}}/>
-                    <DownloadButton
-                        events={values.events}
-                        showTotalDuration={values.showTotalDuration}
-                        totalDuration={values.totalDuration}
-                        filename={values.filename}
-                        format={values.downloadFormat}
-                    />
-                </InputRow>
+                    </InputRow>
+                </div>
 
             </Paper>
 
 
-            <Paper elevation={12}>
+            <Paper elevation={12} className={classes.paper}>
                 <EventTable
                     additionalFields={additionalFields}
                     events={values.events}
