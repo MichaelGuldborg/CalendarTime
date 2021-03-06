@@ -39,8 +39,10 @@ const LoginPage: React.FC = () => {
     const signInAction = useMutation({
         mutationKey: 'signIn',
         onMutate: googleClient.signIn,
-        onSuccess: (response) => {
-            history.push(Routes.home)
+        onSettled: (response) => {
+            if (!('' + response).includes('error')) {
+                history.push(Routes.home)
+            }
         },
     });
 
