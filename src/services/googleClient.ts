@@ -47,8 +47,8 @@ export const googleClient = {
         if (calendarId === undefined) return [];
         const response = await googleAPI.client.calendar.events.list({
             calendarId: calendarId,
-            timeMin: timeMin.toISOString(),
-            timeMax: timeMax.toISOString(),
+            timeMin: new Date(timeMin).toISOString(),
+            timeMax: new Date(timeMax).toISOString(),
             showDeleted: false,
             singleEvents: true,
             orderBy: 'startTime',

@@ -14,6 +14,7 @@ import {DownloadFormat} from "./pages/home/DownloadButton";
 export type UseEventQueryState = [EventQueryState, EventQueryStateFunctions];
 
 export interface EventQueryStateFunctions {
+    setValues: (values: EventQueryFormValues) => void;
     onCalendarChange: (event: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => void;
     onStartChange: (date: MaterialUiPickersDate) => void;
     onEndChange: (date: MaterialUiPickersDate) => void;
@@ -74,7 +75,7 @@ export const useEventQueryState = (): UseEventQueryState => {
 
     const calendarListQuery = useQuery({
         queryKey: 'calendarList',
-        queryFn: () => googleClient.getCalendarList({accessRole: 'owner'}),
+        queryFn: () => googleClient.getCalendarList(),
         onSuccess: async (calendars: GoogleCalendar[]) => {
             const initialCalendar = calendars.find(c => c.summary.includes('@') ?? calendars[0])
             setValues({...values, calendar: initialCalendar});
@@ -97,20 +98,23 @@ export const useEventQueryState = (): UseEventQueryState => {
     const totalDuration = filteredEvents.reduce<number>((result, value) => result + value.duration, 0)
     const filename = [values.calendar?.summary, toISODate(values.start), toISODate(values.end)].join('-')
 
-
-    const onCalendarChange: SelectInputProps['onChange'] = (e) => {
+    const onCalendarChange: SelectInputProps['onChange'] = async (e) => {
         const c = calendars.find((c) => c.id === e.target.value);
-        setValues({...values, calendar: c});
+        const newValues = {...values, calendar: c};
+        setValues(newValues)
+        await fetchEvents(newValues);
     }
     const onStartChange: DatePickerProps["onChange"] = async (date) => {
         if (date === null || date === undefined) return;
-        setValues({...values, start: date})
-        await refreshEvents()
+        const newValues = {...values, start: date};
+        setValues(newValues)
+        await fetchEvents(newValues);
     }
     const onEndChange: DatePickerProps["onChange"] = async (date) => {
         if (date === null || date === undefined) return;
-        setValues({...values, end: date})
-        await refreshEvents()
+        const newValues = {...values, end: date};
+        setValues(newValues)
+        await fetchEvents(newValues);
     }
     const onAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
         setValues({
@@ -137,7 +141,12 @@ export const useEventQueryState = (): UseEventQueryState => {
         if (v === 'csv' || v === 'pdf' || v === 'html') return setValues({...values, downloadFormat: v});
     }
 
-    const refreshEvents = async () => {
+    const handleSetValues = async (values: EventQueryFormValues) => {
+        setValues(values);
+        await fetchEvents(values);
+    }
+
+    const fetchEvents = async (values: { calendar?: GoogleCalendar; start: Date; end: Date; }) => {
         const events = await googleClient.getEvents({
             calendarId: values.calendar?.id,
             timeMin: values.start,
@@ -155,6 +164,7 @@ export const useEventQueryState = (): UseEventQueryState => {
         events: filteredEvents,
         filename,
     }, {
+        setValues: handleSetValues,
         onCalendarChange,
         onStartChange,
         onEndChange,
@@ -163,6 +173,6 @@ export const useEventQueryState = (): UseEventQueryState => {
         setSearch,
         handleFieldsChange,
         onDownloadFormatChange,
-        refreshEvents,
+        refreshEvents: () => fetchEvents(values),
     }]
 }

@@ -33,7 +33,7 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                 <TableHead>
                     <TableRow>
                         <TableCell>Title</TableCell>
-                        {additionalFields.map((key) => <TableCell>{capitalize(key)}</TableCell>)}
+                        {additionalFields.map((key) => <TableCell key={key}>{capitalize(key)}</TableCell>)}
                         <TableCell>Date</TableCell>
                         <TableCell>Start</TableCell>
                         <TableCell>End</TableCell>
@@ -48,7 +48,7 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                             </TableCell>
                             {additionalFields.map((key) => {
                                 const value = event?.[key];
-                                return <TableCell className={classes.cell}>{truncate(value, 180)}</TableCell>;
+                                return <TableCell key={`${event.id}-${key}`} className={classes.cell}>{truncate(value, 180)}</TableCell>;
                             })}
                             <TableCell>{toLocalDate(event.start?.dateTime) || event.start?.date}</TableCell>
                             <TableCell>{toLocalTime(event.start?.dateTime) || 'All-day'}</TableCell>
@@ -57,7 +57,7 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                         </TableRow>
                     ))}
                     {showTotalDuration && <TableRow key={'total'}>
-                        {[0, 1, 2, ...additionalFields].map(() => <TableCell/>)}
+                        {[0, 1, 2, ...additionalFields].map((e,i) => <TableCell key={'sum-' + i}/>)}
                         <TableCell component="th" scope="row">
                             TOTAL
                         </TableCell>

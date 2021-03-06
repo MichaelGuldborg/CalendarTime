@@ -15,7 +15,6 @@ import {
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import InputRow from "./InputRow";
-import {EventTable} from "./EventTable";
 import SearchInput from "../../components/inputs/SearchInput";
 import Paper from "@material-ui/core/Paper";
 import DownloadButton from "./DownloadButton";
@@ -25,6 +24,10 @@ import {useEventQueryState} from "../../useEventQueryState";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowDownIcon from 'remixicon-react/ArrowDownSLineIcon'
 import ArrowUpIcon from 'remixicon-react/ArrowUpSLineIcon'
+import EventBarChart from "./EventBarChart";
+import {EventTable} from "./EventTable";
+import TemplateInput from "./TemplateInput";
+import {ActionButton} from "../../components/buttons/ActionButton";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 const HomePage: React.FC = () => {
     const classes = useStyles();
     const [values, {
+        setValues,
         onCalendarChange,
         onStartChange,
         onEndChange,
@@ -79,7 +83,7 @@ const HomePage: React.FC = () => {
     return (
         <div className={classes.root}>
 
-            <Paper className={classes.toolbar} elevation={12}>
+            <Paper className={classes.toolbar} elevation={6}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
                         <SelectNamed
@@ -107,16 +111,13 @@ const HomePage: React.FC = () => {
                     </Grid>
 
                     <Grid item xs={12} sm={11} md={11} lg={2} xl={5}
-                          style={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Button
-                            variant="contained"
-                            color='primary'
-                            style={{height: 54}}
+                          style={{display: 'flex', justifyContent: 'flex-end'}}
+                    >
+                        <ActionButton
+                            text='REFRESH EVENTS'
+                            icon={RefreshIcon}
                             onClick={refreshEvents}
-                        >
-                            <span style={{marginRight: 8}}>REFRESH EVENTS</span>
-                            <RefreshIcon/>
-                        </Button>
+                        />
                     </Grid>
                 </Grid>
 
@@ -165,6 +166,7 @@ const HomePage: React.FC = () => {
                         <FormGroup row>
                             {Object.keys(values.additionalFields).map(key => {
                                 return <FormControlLabel
+                                    key={key}
                                     label={capitalize(key)}
                                     control={
                                         <Checkbox
@@ -180,10 +182,19 @@ const HomePage: React.FC = () => {
                     </InputRow>
 
                     <Divider className={classes.divider}/>
+                    <InputRow title={'Templates:'}>
+                        <TemplateInput
+                            values={values}
+                            setValues={setValues}
+                        />
+                    </InputRow>
 
                     <InputRow title={'Download format:'}>
-                        <RadioGroup row name="fileFormat" value={values.downloadFormat}
-                                    onChange={onDownloadFormatChange}>
+                        <RadioGroup
+                            row
+                            name="fileFormat" value={values.downloadFormat}
+                            onChange={onDownloadFormatChange}
+                        >
                             <FormControlLabel
                                 value='csv'
                                 control={<Radio color='primary'/>}
@@ -214,14 +225,28 @@ const HomePage: React.FC = () => {
             </Paper>
 
 
-            <Paper elevation={12} className={classes.paper}>
-                <EventTable
-                    additionalFields={additionalFields}
-                    events={values.events}
-                    showTotalDuration={values.showTotalDuration}
-                    totalDuration={values.totalDuration}
-                />
-            </Paper>
+            <Grid container>
+                <Grid item xl={12}>
+                    <Paper elevation={6} className={classes.paper}>
+                        <EventTable
+                            additionalFields={additionalFields}
+                            events={values.events}
+                            showTotalDuration={values.showTotalDuration}
+                            totalDuration={values.totalDuration}
+                        />
+                    </Paper>
+                </Grid>
+                <Grid item xl={4}>
+                    <Paper elevation={6} className={classes.paper}>
+                        <EventBarChart
+                            events={values.events}
+                            start={values.start}
+                            end={values.end}
+                        />
+                    </Paper>
+                </Grid>
+
+            </Grid>
 
 
         </div>

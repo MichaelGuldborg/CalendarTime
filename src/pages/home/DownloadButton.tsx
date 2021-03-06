@@ -1,10 +1,10 @@
-import Button from "@material-ui/core/Button";
 import {jsPDF} from "jspdf";
 import {toHourMinuteText, toLocalDate, toLocalTime} from "../../functions/dateFormat";
 import React from "react";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
 import FileDownloadIcon from 'remixicon-react/FileDownloadLineIcon'
 import {downloadCSVFile} from "../../functions/downloadFile";
+import {ActionButton} from "../../components/buttons/ActionButton";
 
 export type DownloadFormat = 'csv' | 'pdf' | 'html';
 
@@ -79,15 +79,11 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
 
 
         return (
-            <Button
-                variant="contained"
-                color='primary'
-                style={{height: 58}}
+            <ActionButton
+                text='DOWNLOAD'
+                icon={FileDownloadIcon}
                 onClick={handleDownloadClick}
-            >
-                <span style={{marginRight: 8}}>DOWNLOAD</span>
-                <FileDownloadIcon/>
-            </Button>
+            />
         );
     }
 export default DownloadButton;
