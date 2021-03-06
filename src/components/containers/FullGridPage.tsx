@@ -2,7 +2,6 @@ import React from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Grid} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import VersionTag from "../VersionTag";
 
 const useStyles = makeStyles((theme) => ({
     root: {

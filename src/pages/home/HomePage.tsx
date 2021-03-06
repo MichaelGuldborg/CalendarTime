@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DateInput from "../../components/inputs/DateInput";
 import {
@@ -13,13 +13,12 @@ import {
     Tooltip
 } from "@material-ui/core";
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
-import {toISODate} from "../../functions/dateFormat";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import InputRow from "./InputRow";
 import {EventTable} from "./EventTable";
 import SearchInput from "../../components/inputs/SearchInput";
 import Paper from "@material-ui/core/Paper";
-import DownloadButton, {DownloadFormat} from "./DownloadButton";
+import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
 import Grid from "@material-ui/core/Grid";
 import {useEventQueryState} from "../../useEventQueryState";

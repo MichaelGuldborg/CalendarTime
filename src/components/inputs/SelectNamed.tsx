@@ -44,7 +44,7 @@ export const SelectNamed: React.FC<SelectNamedProps> =
                 return (selected as unknown[])?.map(u => {
                     if (typeof u === 'string') return idValueMap[u]?.name;
                     if (typeof u === 'object') return idValueMap[(u as Identifiable).id]?.name
-                }).join(', ');
+                })?.join(', ');
             }
             if (typeof selected === 'string') {
                 return idValueMap[selected]?.name;

@@ -29,8 +29,8 @@ export const googleClient = {
         };
     },
     signIn: () => {
-        const response = googleAPI.auth2.getAuthInstance().signIn();
-
+        googleAPI.auth2.getAuthInstance().signIn();
+        return;
     },
     getCalendarList: async ({accessRole}: { accessRole?: 'reader' | 'writer' | 'owner' } = {}) => {
         const response = await googleAPI.client.calendar.calendarList.list();
