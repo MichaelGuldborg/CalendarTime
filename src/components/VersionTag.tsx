@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
         position: "absolute",
         bottom: 8,
         right: 16,
-        color: theme.palette.info.contrastText
+        color: theme.palette.common.white,
     }
 }))
 
