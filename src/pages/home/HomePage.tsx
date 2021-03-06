@@ -181,7 +181,7 @@ const HomePage: React.FC = () => {
                     </InputRow>
 
                     <Divider className={classes.divider}/>
-                    <InputRow title={'Templates:'}>
+                    <InputRow title={'Query templates:'}>
                         <TemplateInput
                             values={values}
                             setValues={setValues}
