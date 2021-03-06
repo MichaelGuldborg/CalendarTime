@@ -18,7 +18,7 @@ import {
     toLocalDate,
     toLocalTime
 } from "../../functions/dateFormat";
-import {googleClient} from "../../services/calendarClient";
+import {googleClient} from "../../services/googleClient";
 import {useQuery} from "react-query";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import {SelectInputProps} from "@material-ui/core/Select/SelectInput";

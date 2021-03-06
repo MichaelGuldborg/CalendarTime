@@ -4,7 +4,7 @@ import {Button} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {useHistory} from "react-router";
 import Routes from "../../constants/Routes";
-import {googleClient} from "../../services/calendarClient";
+import {googleClient} from "../../services/googleClient";
 
 const useStyles = makeStyles((theme) => ({
     button: {
