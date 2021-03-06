@@ -194,11 +194,11 @@ const HomePage: React.FC = () => {
                                 control={<Radio color='primary'/>}
                                 label="PDF"
                             />
-                            <FormControlLabel
-                                value='html'
-                                control={<Radio color='primary'/>}
-                                label="HTML"
-                            />
+                            {/*<FormControlLabel*/}
+                            {/*    value='html'*/}
+                            {/*    control={<Radio color='primary'/>}*/}
+                            {/*    label="HTML"*/}
+                            {/*/>*/}
                         </RadioGroup>
                         <div style={{flex: 1}}/>
                         <DownloadButton
