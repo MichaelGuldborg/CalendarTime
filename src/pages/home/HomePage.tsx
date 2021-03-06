@@ -1,22 +1,28 @@
 import React, {useState} from 'react';
-import {DatePickerProps} from "@material-ui/pickers";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DateInput from "../../components/inputs/DateInput";
-import {Button, capitalize, Checkbox, Divider, FormControlLabel, FormGroup, Radio, RadioGroup} from "@material-ui/core";
+import {
+    Button,
+    capitalize,
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    FormGroup,
+    Radio,
+    RadioGroup,
+    Tooltip
+} from "@material-ui/core";
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
-import {endLastMonth, startLastMonth} from "../../functions/dateFormat";
-import {googleClient} from "../../services/googleClient";
-import {useQuery} from "react-query";
+import {toISODate} from "../../functions/dateFormat";
 import SelectNamed from "../../components/inputs/SelectNamed";
-import {SelectInputProps} from "@material-ui/core/Select/SelectInput";
-import GoogleCalendar from "../../models/GoogleCalendar";
-import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
-import {SwitchBaseProps} from "@material-ui/core/internal/SwitchBase";
 import InputRow from "./InputRow";
 import {EventTable} from "./EventTable";
 import SearchInput from "../../components/inputs/SearchInput";
 import Paper from "@material-ui/core/Paper";
 import DownloadButton, {DownloadFormat} from "./DownloadButton";
+import InformationIcon from 'remixicon-react/InformationLineIcon'
+import Grid from "@material-ui/core/Grid";
+import {useEventQueryState} from "../../useEventQueryState";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,115 +41,28 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(2),
     },
     selector: {
-        minWidth: 250,
+        width: '100%',
+        // minWidth: 250,
     }
 }))
 
 
-interface ValueState {
-    calendar?: GoogleCalendar,
-    start: Date,
-    end: Date,
-    allDayOnly: boolean,
-    showTotalDuration: boolean,
-    additionalFields: {
-        createdByEmail: boolean,
-        createdByName: boolean,
-        created: boolean,
-        updated: boolean,
-        description: boolean,
-        location: boolean,
-    }
-}
-
 const HomePage: React.FC = () => {
     const classes = useStyles();
-    const [values, setValues] = useState<ValueState>({
-        calendar: undefined,
-        start: startLastMonth,
-        end: endLastMonth,
-        allDayOnly: false,
-        showTotalDuration: true,
-        additionalFields: {
-            createdByEmail: false,
-            createdByName: false,
-            created: false,
-            updated: false,
-            description: false,
-            location: false,
-        },
-    });
-    const [search, setSearch] = useState('');
-    const searchLower = search.toLowerCase();
-
-
-    const calendarListQuery = useQuery({
-        queryKey: 'calendarList',
-        queryFn: () => googleClient.getCalendarList({accessRole: 'owner'}),
-        onSuccess: async (calendars: GoogleCalendar[]) => {
-            const initialCalendar = calendars.find(c => c.summary.includes('@') ?? calendars[0])
-            setValues({...values, calendar: initialCalendar});
-        },
-        initialData: [],
-    });
-    const calendars: GoogleCalendar[] = calendarListQuery.data ?? [];
-    const [events, setEvents] = useState<GoogleCalendarEvent[]>([]);
-    const filteredEvents = events.filter(e => {
-        if (values.allDayOnly && e.start.date === undefined) return false;
-        if (!values.allDayOnly && e.start.dateTime === undefined) return false;
-        const summaryLower = e.summary?.toLowerCase();
-        const descriptionLower = e.description?.toLowerCase() ?? '';
-        const locationLower = e.location?.toLowerCase() ?? '';
-        return summaryLower.includes(searchLower) || descriptionLower.includes(searchLower) || locationLower.includes(searchLower);
-    })
-
-
-    const totalDuration = filteredEvents.reduce<number>((result, value) => {
-        return result + value.duration;
-    }, 0)
-
-
-    const onCalendarChange: SelectInputProps['onChange'] = (e) => {
-        const c = calendars.find((c) => c.id === e.target.value);
-        setValues({...values, calendar: c});
-    }
-    const handleStartChange: DatePickerProps["onChange"] = (date) => {
-        if (date === null || date === undefined) return;
-        setValues({...values, start: date})
-    }
-    const handleEndChange: DatePickerProps["onChange"] = (date) => {
-        if (date === null || date === undefined) return;
-        setValues({...values, end: date})
-    }
-    const handleAdditionalFieldsChange: (p: string) => SwitchBaseProps['onChange'] = (p) => (e, checked) => {
-        setValues({
-            ...values,
-            additionalFields: {
-                ...values.additionalFields,
-                [p]: checked,
-            }
-        });
-    }
-    const handleAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
-        setValues({
-            ...values,
-            allDayOnly: v === 'true',
-        })
-    };
-
-    const handleRefreshClick = async () => {
-        const events = await googleClient.getEvents({
-            calendarId: values.calendar?.id,
-            timeMin: values.start,
-            timeMax: values.end
-        });
-        setEvents(events);
-    }
+    const [values, {
+        onCalendarChange,
+        onStartChange,
+        onEndChange,
+        onAllDayOnlyChange,
+        setSearch,
+        onShowTotalDurationChange,
+        handleFieldsChange,
+        onDownloadFormatChange,
+        refreshEvents,
+    }] = useEventQueryState();
 
 
     const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
-
-    const [downloadFormat, setDownloadFormat] = useState<DownloadFormat>('csv');
 
 
     return (
@@ -151,33 +70,53 @@ const HomePage: React.FC = () => {
 
             <Paper className={classes.toolbar} elevation={12}>
                 <InputRow>
-                    <SelectNamed
-                        className={classes.selector}
-                        variant="outlined"
-                        options={calendars}
-                        value={values.calendar?.id ?? ''}
-                        onChange={onCalendarChange}
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                            <SelectNamed
+                                className={classes.selector}
+                                variant="outlined"
+                                options={values.calendars}
+                                value={values.calendar?.id ?? ''}
+                                onChange={onCalendarChange}
+                            />
+                        </Grid>
+                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                            <DateInput value={values.start} onChange={onStartChange}/>
+                        </Grid>
+                        <Grid item sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
+                            <DateInput value={values.end} onChange={onEndChange}/>
+                        </Grid>
 
-                    <DateInput value={values.start} onChange={handleStartChange}/>
-                    <DateInput value={values.end} onChange={handleEndChange}/>
-                    <div style={{flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
-                        <Button variant='outlined' onClick={handleRefreshClick} style={{marginLeft: 16}}>
-                            <span style={{marginRight: 8}}>REFRESH EVENTS</span>
-                            <RefreshIcon/>
-                        </Button>
-                    </div>
+                        <Grid item sm={12} md={12} lg={3} xl={6} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                            <Button
+                                variant="contained"
+                                color='primary'
+                                style={{height: 54}}
+                                onClick={refreshEvents}
+                            >
+                                <span style={{marginRight: 8}}>REFRESH EVENTS</span>
+                                <RefreshIcon/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+
                 </InputRow>
 
                 <Divider className={classes.divider}/>
 
 
                 <InputRow title={'Search filter:'}>
-                    <SearchInput search={search} onChange={setSearch}/>
+                    <SearchInput search={values.search} onChange={setSearch}/>
+                    <div style={{display: 'flex', alignItems: 'center', marginLeft: 16}}>
+                        <Tooltip
+                            title={"Search will check if the event title, description or location contains the entered search value"}>
+                            <div><InformationIcon/></div>
+                        </Tooltip>
+                    </div>
                 </InputRow>
 
                 <InputRow title={'All Day filter:'}>
-                    <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={handleAllDayOnlyChange}>
+                    <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={onAllDayOnlyChange}>
                         <FormControlLabel
                             value='false'
                             control={<Radio color='primary'/>}
@@ -198,7 +137,7 @@ const HomePage: React.FC = () => {
                         control={<Checkbox
                             color="primary"
                             checked={values.showTotalDuration}
-                            onChange={(e, checked) => setValues({...values, showTotalDuration: checked})}
+                            onChange={onShowTotalDurationChange}
                         />}
                     />
                 </InputRow>
@@ -211,7 +150,7 @@ const HomePage: React.FC = () => {
                                     <Checkbox
                                         color="primary"
                                         checked={values.additionalFields[key]}
-                                        onChange={handleAdditionalFieldsChange(key)}
+                                        onChange={handleFieldsChange(key)}
                                         name={key}
                                     />
                                 }
@@ -223,9 +162,7 @@ const HomePage: React.FC = () => {
                 <Divider className={classes.divider}/>
 
                 <InputRow title={'Download format:'}>
-                    <RadioGroup row name="fileFormat" value={downloadFormat} onChange={(e, v) => {
-                        if (v === 'csv' || v === 'pdf' || v === 'html') return setDownloadFormat(v);
-                    }}>
+                    <RadioGroup row name="fileFormat" value={values.downloadFormat} onChange={onDownloadFormatChange}>
                         <FormControlLabel
                             value='csv'
                             control={<Radio color='primary'/>}
@@ -244,10 +181,11 @@ const HomePage: React.FC = () => {
                     </RadioGroup>
                     <div style={{flex: 1}}/>
                     <DownloadButton
-                        events={filteredEvents}
-                        totalDuration={totalDuration}
-                        filename={values.calendar?.summary}
-                        format={downloadFormat}
+                        events={values.events}
+                        showTotalDuration={values.showTotalDuration}
+                        totalDuration={values.totalDuration}
+                        filename={values.filename}
+                        format={values.downloadFormat}
                     />
                 </InputRow>
 
@@ -257,9 +195,9 @@ const HomePage: React.FC = () => {
             <Paper elevation={12}>
                 <EventTable
                     additionalFields={additionalFields}
-                    events={filteredEvents}
+                    events={values.events}
                     showTotalDuration={values.showTotalDuration}
-                    totalDuration={totalDuration}
+                    totalDuration={values.totalDuration}
                 />
             </Paper>
 

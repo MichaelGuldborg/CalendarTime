@@ -22,6 +22,12 @@ export const endLastMonth = new Date();
 endLastMonth.setMonth(endLastMonth.getMonth(), 0);
 endLastMonth.setHours(0, 0, 0)
 
+export const toISODate = (input: Date | string): string => {
+    if (input === undefined) return '';
+    const date = new Date(input);
+    return '' + date.getDate() + '-' + date.getMonth() + 1 + '-' + date.getFullYear()
+};
+
 
 export const toLocalDateTime = (input: Date | string): string => {
     if (input === undefined) return '';
