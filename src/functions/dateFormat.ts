@@ -63,6 +63,4 @@ export const toTimeAgo = (input?: Date | string): string => {
     return `${date.getDate()}. ${monthName} ${toLocalTime(date)}`;
 };
 
-const monthNames = [
-    'Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'
-];
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
