@@ -2,7 +2,7 @@
 production_branch='master'
 staging_branch='staging'
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-BLUE="\e[0;94m"
+BLUE="\033[0;94m"
 RED='\033[0;31m'
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
