@@ -3,29 +3,21 @@
 
 # check if branch is protected (production or staging)
 if [[ $current_branch != "$production_branch" && $current_branch != "$staging_branch" ]] ; then
-    print "Branch \"${current_branch}\" is NOT protected" $GREEN
+    print "Branch \"${current_branch}\" is NOT protected" $BLUE
     exit 0;
 fi
 
-print "Branch \"${current_branch}\" is protected" $YELLOW
-print "Running pre push check..." $YELLOW
+print "Branch \"${current_branch}\" is protected" $BLUE
 
-# check lint and type errors
+print "Running lint:check..." $BLUE
 npm run lint:check
 if [ $? != 0 ]; then
   exit 1
 fi
 
-# check build command
-#npm run build
-#if [ $? != 0 ]; then
-#  exit 1
-#fi
+print "lint:check PASSED" $GREEN
 
-
-print "Pre push check passed" $GREEN
-
-print "Updating version" $GREEN
+print "Updating patch version" $BLUE
 yarn version --patch
 
 exit 0
