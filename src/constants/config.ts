@@ -14,4 +14,5 @@ export const config = {
     name: packageJson['name'],
     version: packageJson['version'],
 }
+
 export default config;

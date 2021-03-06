@@ -1,6 +1,6 @@
-import googleAPIConfig from '../apiGoogleconfig.json'
 import GoogleCalendar from "../models/GoogleCalendar";
 import GoogleCalendarEvent from "../models/GoogleCalendarEvent";
+import googleAPIConfig from "../constants/googleAPIConfig";
 
 
 let googleAPI: any = undefined;
@@ -66,8 +66,8 @@ export const googleClient = {
 }
 
 const getEventDuration = (event: GoogleCalendarEvent) => {
-    if(event?.start?.dateTime === undefined && event?.start?.date === undefined) return 0;
-    if(event?.start?.dateTime === undefined){
+    if (event?.start?.dateTime === undefined && event?.start?.date === undefined) return 0;
+    if (event?.start?.dateTime === undefined) {
         return (new Date(event.end.date).getTime() - new Date(event.start.date).getTime())
     }
     return (new Date(event.end.dateTime).getTime() - new Date(event.start.dateTime).getTime())

@@ -27,4 +27,6 @@ yarn-error.log*
 
 debug.log
 
-src/apiGoogleconfig.json
+apiGoogleconfig.json
+.env.development
+.env.production
