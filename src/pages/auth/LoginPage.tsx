@@ -1,16 +1,33 @@
 import React from "react";
-import LogoPage from "../../components/containers/LogoPage";
+import FullGridPage from "../../components/containers/FullGridPage";
 import {Button} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {useHistory} from "react-router";
 import Routes from "../../constants/Routes";
 import {googleClient} from "../../services/googleClient";
+import GoogleIcon from 'remixicon-react/GoogleFillIcon'
+import VersionTag from "../../components/VersionTag";
+import {useMutation} from "react-query";
+import FeedbackDisplay from "../../components/displays/FeedbackDisplay";
 
 const useStyles = makeStyles((theme) => ({
-    button: {
-        padding: theme.spacing(2, 4),
+    title: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
         fontSize: 16,
+    },
+    button: {
+        marginBottom: theme.spacing(2),
+        padding: theme.spacing(2, 4),
+        fontSize: 18,
         fontWeight: 500,
+        '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+        }
     }
 }))
 
@@ -19,22 +36,44 @@ const LoginPage: React.FC = () => {
     const classes = useStyles();
     const history = useHistory();
 
+    const signInAction = useMutation({
+        mutationKey: 'signIn',
+        onMutate: googleClient.signIn,
+        onSuccess: (response) => {
+            history.push(Routes.home)
+        },
+    });
+
 
     const handleLoginClick = async () => {
-        await googleClient.signIn();
-        history.push(Routes.home);
+        signInAction.mutate();
     }
 
     return (
-        <LogoPage>
-            <Button
-                className={classes.button}
-                variant="outlined"
-                onClick={handleLoginClick}
-            >
-                Sing in with Google
-            </Button>
-        </LogoPage>
+        <FullGridPage>
+
+            <div className={classes.title}>
+                <img src={'logo.png'} alt='logo' width='100%'/>
+                Login to visualize your time
+            </div>
+
+            <div style={{flex: 1}}>
+                <Button
+                    className={classes.button}
+                    variant="outlined"
+                    onClick={handleLoginClick}
+                >
+                    <GoogleIcon style={{marginRight: 16}}/>
+                    Sing in with Google
+                </Button>
+                <FeedbackDisplay
+                    error={(signInAction.error as any)?.error}
+                    onDismiss={signInAction.reset}
+                />
+            </div>
+
+            <VersionTag/>
+        </FullGridPage>
     )
 }
 

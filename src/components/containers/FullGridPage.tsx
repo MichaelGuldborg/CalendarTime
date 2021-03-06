@@ -1,8 +1,7 @@
 import React from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Box, Grid} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import LogoIcon from "../../assets/Icon_white_500px.png"
 import VersionTag from "../VersionTag";
 
 const useStyles = makeStyles((theme) => ({
@@ -15,14 +14,16 @@ const useStyles = makeStyles((theme) => ({
         backgroundSize: 'cover',
         backgroundPosition: 'center',
     },
-    content: {
+    paper: {
         width: '100%',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
+
     },
-    form: {
+    content: {
         padding: theme.spacing(6, 6),
     },
     imgWrapper: {
@@ -41,24 +42,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const LogoPage: React.FC = ({children}) => {
+const FullGridPage: React.FC = ({children}) => {
     const classes = useStyles();
 
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12} sm={8} md={5} lg={4}>
-                <Paper elevation={12} square className={classes.content}>
-                    <Box width='100%'
-                         height='100%'
-                         display='flex'
-                         alignItems='center'
-                         justifyContent='center'
-                    >
-                        <div className={classes.form}>
-                            {children}
-                        </div>
-                        <VersionTag/>
-                    </Box>
+                <Paper elevation={12} square className={classes.paper}>
+                    {children}
                 </Paper>
             </Grid>
             <Grid item xs={false} sm={4} md={7} lg={8} className={classes.image}>
@@ -71,5 +62,5 @@ const LogoPage: React.FC = ({children}) => {
 }
 
 
-export default LogoPage;
+export default FullGridPage;
 

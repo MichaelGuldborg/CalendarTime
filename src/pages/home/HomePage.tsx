@@ -2,42 +2,40 @@ import React, {useState} from 'react';
 import {DatePickerProps} from "@material-ui/pickers";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DateInput from "../../components/inputs/DateInput";
-import {IconButton} from "@material-ui/core";
+import {Button, capitalize, Checkbox, Divider, FormControlLabel, FormGroup, Radio, RadioGroup} from "@material-ui/core";
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import {
-    endLastMonth,
-    startLastMonth,
-    toDuration,
-    toDurationText,
-    toLocalDate,
-    toLocalTime
-} from "../../functions/dateFormat";
+import {endLastMonth, startLastMonth} from "../../functions/dateFormat";
 import {googleClient} from "../../services/googleClient";
 import {useQuery} from "react-query";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import {SelectInputProps} from "@material-ui/core/Select/SelectInput";
-import PDFButton from "./PDFButton";
 import GoogleCalendar from "../../models/GoogleCalendar";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
+import {SwitchBaseProps} from "@material-ui/core/internal/SwitchBase";
+import InputRow from "./InputRow";
+import {EventTable} from "./EventTable";
+import SearchInput from "../../components/inputs/SearchInput";
+import Paper from "@material-ui/core/Paper";
+import DownloadButton, {DownloadFormat} from "./DownloadButton";
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
+        padding: theme.spacing(4, 6)
     },
     toolbar: {
         display: 'flex',
+        flexDirection: 'column',
         padding: theme.spacing(4, 8),
+        marginBottom: theme.spacing(4),
+    },
+    divider: {
+        marginBottom: theme.spacing(2),
     },
     selector: {
-        minWidth: 240,
+        minWidth: 250,
     }
 }))
 
@@ -46,6 +44,16 @@ interface ValueState {
     calendar?: GoogleCalendar,
     start: Date,
     end: Date,
+    allDayOnly: boolean,
+    showTotalDuration: boolean,
+    additionalFields: {
+        createdByEmail: boolean,
+        createdByName: boolean,
+        created: boolean,
+        updated: boolean,
+        description: boolean,
+        location: boolean,
+    }
 }
 
 const HomePage: React.FC = () => {
@@ -54,17 +62,40 @@ const HomePage: React.FC = () => {
         calendar: undefined,
         start: startLastMonth,
         end: endLastMonth,
+        allDayOnly: false,
+        showTotalDuration: true,
+        additionalFields: {
+            createdByEmail: false,
+            createdByName: false,
+            created: false,
+            updated: false,
+            description: false,
+            location: false,
+        },
     });
+    const [search, setSearch] = useState('');
+    const searchLower = search.toLowerCase();
+
 
     const calendarListQuery = useQuery({
         queryKey: 'calendarList',
         queryFn: () => googleClient.getCalendarList({accessRole: 'owner'}),
-        onSuccess: (calendars) => setValues({...values, calendar: calendars[0]}),
+        onSuccess: async (calendars: GoogleCalendar[]) => {
+            const initialCalendar = calendars.find(c => c.summary.includes('@') ?? calendars[0])
+            setValues({...values, calendar: initialCalendar});
+        },
         initialData: [],
     });
     const calendars: GoogleCalendar[] = calendarListQuery.data ?? [];
     const [events, setEvents] = useState<GoogleCalendarEvent[]>([]);
-    const filteredEvents = events.filter(e => e.start.dateTime !== undefined)
+    const filteredEvents = events.filter(e => {
+        if (values.allDayOnly && e.start.date === undefined) return false;
+        if (!values.allDayOnly && e.start.dateTime === undefined) return false;
+        const summaryLower = e.summary?.toLowerCase();
+        const descriptionLower = e.description?.toLowerCase() ?? '';
+        const locationLower = e.location?.toLowerCase() ?? '';
+        return summaryLower.includes(searchLower) || descriptionLower.includes(searchLower) || locationLower.includes(searchLower);
+    })
 
 
     const totalDuration = filteredEvents.reduce<number>((result, value) => {
@@ -84,6 +115,21 @@ const HomePage: React.FC = () => {
         if (date === null || date === undefined) return;
         setValues({...values, end: date})
     }
+    const handleAdditionalFieldsChange: (p: string) => SwitchBaseProps['onChange'] = (p) => (e, checked) => {
+        setValues({
+            ...values,
+            additionalFields: {
+                ...values.additionalFields,
+                [p]: checked,
+            }
+        });
+    }
+    const handleAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
+        setValues({
+            ...values,
+            allDayOnly: v === 'true',
+        })
+    };
 
     const handleRefreshClick = async () => {
         const events = await googleClient.getEvents({
@@ -94,74 +140,130 @@ const HomePage: React.FC = () => {
         setEvents(events);
     }
 
-    const filename = values.calendar?.summary + '.pdf';
+
+    const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
+
+    const [downloadFormat, setDownloadFormat] = useState<DownloadFormat>('csv');
+
 
     return (
         <div className={classes.root}>
 
-            {/*{JSON.stringify(events?.[0], null, 2)}*/}
-            {/*{JSON.stringify(calendars, null, 2)}*/}
-            <div className={classes.toolbar}>
+            <Paper className={classes.toolbar} elevation={12}>
+                <InputRow>
+                    <SelectNamed
+                        className={classes.selector}
+                        variant="outlined"
+                        options={calendars}
+                        value={values.calendar?.id ?? ''}
+                        onChange={onCalendarChange}
+                    />
 
-                <SelectNamed
-                    className={classes.selector}
-                    variant="outlined"
-                    options={calendars}
-                    value={values.calendar?.id ?? ''}
-                    onChange={onCalendarChange}
-                />
+                    <DateInput value={values.start} onChange={handleStartChange}/>
+                    <DateInput value={values.end} onChange={handleEndChange}/>
+                    <div style={{flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
+                        <Button variant='outlined' onClick={handleRefreshClick} style={{marginLeft: 16}}>
+                            <span style={{marginRight: 8}}>REFRESH EVENTS</span>
+                            <RefreshIcon/>
+                        </Button>
+                    </div>
+                </InputRow>
 
-                <DateInput value={values.start} onChange={handleStartChange}/>
-                <DateInput value={values.end} onChange={handleEndChange}/>
-                <div>
-                    <IconButton onClick={handleRefreshClick}>
-                        <RefreshIcon/>
-                    </IconButton>
-                </div>
-                <PDFButton
+                <Divider className={classes.divider}/>
+
+
+                <InputRow title={'Search filter:'}>
+                    <SearchInput search={search} onChange={setSearch}/>
+                </InputRow>
+
+                <InputRow title={'All Day filter:'}>
+                    <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={handleAllDayOnlyChange}>
+                        <FormControlLabel
+                            value='false'
+                            control={<Radio color='primary'/>}
+                            label="Exclude All-day events"
+                        />
+                        <FormControlLabel
+                            value='true'
+                            control={<Radio color='primary'/>}
+                            label="All-day events only"
+                        />
+                    </RadioGroup>
+                </InputRow>
+
+
+                <InputRow title={'Show total duration:'}>
+                    <FormControlLabel
+                        label=''
+                        control={<Checkbox
+                            color="primary"
+                            checked={values.showTotalDuration}
+                            onChange={(e, checked) => setValues({...values, showTotalDuration: checked})}
+                        />}
+                    />
+                </InputRow>
+                <InputRow title={'Additional fields:'}>
+                    <FormGroup row>
+                        {Object.keys(values.additionalFields).map(key => {
+                            return <FormControlLabel
+                                label={capitalize(key)}
+                                control={
+                                    <Checkbox
+                                        color="primary"
+                                        checked={values.additionalFields[key]}
+                                        onChange={handleAdditionalFieldsChange(key)}
+                                        name={key}
+                                    />
+                                }
+                            />
+                        })}
+                    </FormGroup>
+                </InputRow>
+
+                <Divider className={classes.divider}/>
+
+                <InputRow title={'Download format:'}>
+                    <RadioGroup row name="fileFormat" value={downloadFormat} onChange={(e, v) => {
+                        if (v === 'csv' || v === 'pdf' || v === 'html') return setDownloadFormat(v);
+                    }}>
+                        <FormControlLabel
+                            value='csv'
+                            control={<Radio color='primary'/>}
+                            label="CSV"
+                        />
+                        <FormControlLabel
+                            value='pdf'
+                            control={<Radio color='primary'/>}
+                            label="PDF"
+                        />
+                        <FormControlLabel
+                            value='html'
+                            control={<Radio color='primary'/>}
+                            label="HTML"
+                        />
+                    </RadioGroup>
+                    <div style={{flex: 1}}/>
+                    <DownloadButton
+                        events={filteredEvents}
+                        totalDuration={totalDuration}
+                        filename={values.calendar?.summary}
+                        format={downloadFormat}
+                    />
+                </InputRow>
+
+            </Paper>
+
+
+            <Paper elevation={12}>
+                <EventTable
+                    additionalFields={additionalFields}
                     events={filteredEvents}
+                    showTotalDuration={values.showTotalDuration}
                     totalDuration={totalDuration}
-                    filename={filename}
                 />
+            </Paper>
 
 
-            </div>
-
-            <TableContainer>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Titel</TableCell>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Start</TableCell>
-                            <TableCell>End</TableCell>
-                            <TableCell>Duration</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredEvents.map((event) => (
-                            <TableRow key={event.id}>
-                                <TableCell component="th" scope="row">
-                                    {event.summary}
-                                </TableCell>
-                                <TableCell>{toLocalDate(event.start?.dateTime)}</TableCell>
-                                <TableCell>{toLocalTime(event.start?.dateTime)}</TableCell>
-                                <TableCell>{toLocalTime(event.end?.dateTime)}</TableCell>
-                                <TableCell>{toDuration(event.start?.dateTime, event.end?.dateTime)}</TableCell>
-                            </TableRow>
-                        ))}
-                        <TableRow key={'total'}>
-                            <TableCell component="th" scope="row">
-                                TOTAL
-                            </TableCell>
-                            <TableCell/>
-                            <TableCell/>
-                            <TableCell/>
-                            <TableCell>{toDurationText(totalDuration)}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
         </div>
     );
 };

@@ -23,25 +23,24 @@ endLastMonth.setMonth(endLastMonth.getMonth(), 0);
 endLastMonth.setHours(0, 0, 0)
 
 
-export const toLocalDateTime = (input: Date | string) => {
+export const toLocalDateTime = (input: Date | string): string => {
+    if (input === undefined) return '';
     return toLocalDate(input) + ' ' + toLocalTime(input);
 };
 
-export const toLocalDate = (input: Date | string) => {
+export const toLocalDate = (input: Date | string): string => {
+    if (input === undefined) return '';
     const date = new Date(input);
     return '' + date.getDate() + '. ' + monthNames[date.getMonth()] + ' ' + date.getFullYear()
 };
 
-export const toLocalTime = (input: Date | string) => {
+export const toLocalTime = (input: Date | string): string => {
+    if (input === undefined) return '';
     const date = new Date(input);
     return [twoDigit(date.getHours()), twoDigit(date.getMinutes())].join(":")
 };
 
-export const toDuration = (a: Date | string, b: Date | string) => {
-    return toDurationText(new Date(b).getTime() - new Date(a).getTime());
-};
-
-export const toDurationText = (diff: number) => {
+export const toHourMinuteText = (diff: number) => {
     const hours = (diff / 3600000);
     const minutes = (diff - hours * 3600000) / 60000;
     return [hours.toFixed(), twoDigit(minutes)].join(':')

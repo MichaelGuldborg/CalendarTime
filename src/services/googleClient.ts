@@ -1,4 +1,4 @@
-import googleAPIConfig from '../../apiGoogleconfig.json';
+import googleAPIConfig from '../apiGoogleconfig.json'
 import GoogleCalendar from "../models/GoogleCalendar";
 import GoogleCalendarEvent from "../models/GoogleCalendarEvent";
 
@@ -7,7 +7,7 @@ let googleAPI: any = undefined;
 export const googleClient = {
     isSignedIn: false,
     initialize: () => {
-        if(googleAPI) return;
+        if (googleAPI) return;
         const script = document.createElement('script');
         script.src = 'https://apis.google.com/js/api.js';
         document.body.appendChild(script);
@@ -29,7 +29,8 @@ export const googleClient = {
         };
     },
     signIn: () => {
-        return googleAPI.auth2.getAuthInstance().signIn();
+        const response = googleAPI.auth2.getAuthInstance().signIn();
+
     },
     getCalendarList: async ({accessRole}: { accessRole?: 'reader' | 'writer' | 'owner' } = {}) => {
         const response = await googleAPI.client.calendar.calendarList.list();
@@ -57,9 +58,19 @@ export const googleClient = {
         const responseBody: { items: GoogleCalendarEvent[] } = JSON.parse(response.body);
         return responseBody.items.map(e => ({
             ...e,
-            duration: (new Date(e.end.dateTime).getTime() - new Date(e.start.dateTime).getTime()) ?? 0
+            duration: getEventDuration(e),
+            createdByEmail: e.creator?.email,
+            createdByName: e.creator?.displayName,
         }));
     }
+}
+
+const getEventDuration = (event: GoogleCalendarEvent) => {
+    if(event?.start?.dateTime === undefined && event?.start?.date === undefined) return 0;
+    if(event?.start?.dateTime === undefined){
+        return (new Date(event.end.date).getTime() - new Date(event.start.date).getTime())
+    }
+    return (new Date(event.end.dateTime).getTime() - new Date(event.start.dateTime).getTime())
 }
 
 googleClient.initialize();

@@ -61,7 +61,6 @@ const SearchListView = <T extends SearchListElement, >(
                     <SearchInput
                         search={search}
                         onChange={setSearch}
-                        box
                     />
                 </Box>
                 <Divider/>
