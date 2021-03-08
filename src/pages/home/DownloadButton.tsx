@@ -1,12 +1,17 @@
-import {jsPDF} from "jspdf";
 import {toHourMinuteText, toLocalDate, toLocalTime} from "../../functions/dateFormat";
 import React from "react";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
 import FileDownloadIcon from 'remixicon-react/FileDownloadLineIcon'
 import {downloadCSVFile} from "../../functions/downloadFile";
 import {ActionButton} from "../../components/buttons/ActionButton";
+import pdfMakeX from 'pdfmake/build/pdfmake.js';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import config from "../../constants/config";
+
+const pdfFontsX = require('pdfmake-unicode/dist/pdfmake-unicode.js');
 
 export type DownloadFormat = 'csv' | 'pdf' | 'html';
+pdfMakeX.vfs = pdfFontsX.pdfMake.vfs;
 
 export interface DownloadButtonProps {
     events: GoogleCalendarEvent[];
@@ -58,20 +63,42 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
         }
 
         const downloadPDF = () => {
-            const doc = new jsPDF({
-                orientation: 'p',
-            });
-            const yOffset = 10;
-            events.forEach((e, index) => {
-                doc.text(toLocalDate(e.start.dateTime), 20, 20 + yOffset * index)
-                doc.text(toLocalTime(e.start.dateTime), 80, 20 + yOffset * index)
-                doc.text(toLocalTime(e.end.dateTime), 100, 20 + yOffset * index)
-                doc.text(toHourMinuteText(e.duration), 130, 20 + yOffset * index)
-            })
-            doc.text('Total', 20, 20 + yOffset * events.length)
-            doc.text(toHourMinuteText(totalDuration), 130, 20 + yOffset * events.length)
-            doc.save(filename + '.pdf');
+            pdfMake.createPdf({
+                info: {
+                    title: filename,
+                    creationDate: new Date(),
+                    producer: config.name,
+                },
+                content: [
+                    {
+                        style: {margin: [0, 5, 0, 15]},
+                        table: {
+                            body: [
+                                ['Title', 'Date', 'Start', 'End', 'Duration'],
+                                ...events.map(e => {
+                                    return [
+                                        e.summary,
+                                        toLocalDate(e.start.dateTime),
+                                        toLocalTime(e.start.dateTime),
+                                        toLocalTime(e.end.dateTime),
+                                        toHourMinuteText(e.duration)
+                                    ];
+                                }),
+                                ['', '', '', 'Total', toHourMinuteText(totalDuration)],
+                            ]
+                        }
+                    },
+                ],
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    },
+                },
+            }).download(filename + '.pdf');
         }
+
 
         const downloadHTML = () => {
 
