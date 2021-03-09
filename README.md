@@ -1,7 +1,9 @@
-# Calendar Time
+# [Calendar Time](https://github.com/MichaelGuldborg/CalendarTime)
 > This is the repository of the opensource web application Calendar Time
 
-The application allows for exporting google calendar events to csv and pdf formats
+The primary functionality of this application is to provide the user with insight into google calendar events.
+This insight can be used to create timesheets or evaluate priorities for different activities.
+
 
 
 ## Features
