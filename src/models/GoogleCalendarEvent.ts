@@ -18,6 +18,8 @@ export interface GoogleCalendarEvent {
         self: boolean,
     },
     // extensions
+    calendarId: string,
+    calendarTitle: string;
     title: string,
     duration: number,
     createdByEmail?: string

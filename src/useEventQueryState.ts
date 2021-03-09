@@ -36,25 +36,25 @@ export interface EventQueryState extends EventQueryFormValues {
 }
 
 export interface EventQueryFormValues {
-    calendar?: GoogleCalendar,
-    start: Date,
-    end: Date,
-    allDayOnly: boolean,
-    showTotalDuration: boolean,
+    selectedCalendars: GoogleCalendar[];
+    start: Date;
+    end: Date;
+    allDayOnly: boolean;
+    showTotalDuration: boolean;
     downloadFormat: DownloadFormat;
     additionalFields: {
-        createdByEmail: boolean,
-        createdByName: boolean,
-        created: boolean,
-        updated: boolean,
-        description: boolean,
-        location: boolean,
+        createdByEmail: boolean;
+        createdByName: boolean;
+        created: boolean;
+        updated: boolean;
+        description: boolean;
+        location: boolean;
     }
 }
 
 export const useEventQueryState = (): UseEventQueryState => {
     const [values, setValues] = useState<EventQueryFormValues>({
-        calendar: undefined,
+        selectedCalendars: [],
         start: startLastMonth,
         end: endLastMonth,
         allDayOnly: false,
@@ -77,14 +77,17 @@ export const useEventQueryState = (): UseEventQueryState => {
         queryKey: 'calendarList',
         queryFn: () => googleClient.getCalendarList(),
         onSuccess: async (calendars: GoogleCalendar[]) => {
-            const initialCalendar = calendars.find(c => c.summary.includes('@') ?? calendars[0])
-            setValues({...values, calendar: initialCalendar});
+            console.log('calendars:', calendars)
+            if (values.selectedCalendars.length) return;
+            const initialCalendar = calendars.find(c => c.summary.includes('@')) ?? calendars[0]
+            setValues({...values, selectedCalendars: [initialCalendar]});
         },
         initialData: [],
     });
 
 
     const calendars: GoogleCalendar[] = calendarListQuery.data ?? [];
+
     const [events, setEvents] = useState<GoogleCalendarEvent[]>([]);
     const filteredEvents = events.filter(e => {
         if (values.allDayOnly && e.start.date === undefined) return false;
@@ -96,11 +99,11 @@ export const useEventQueryState = (): UseEventQueryState => {
     })
 
     const totalDuration = filteredEvents.reduce<number>((result, value) => result + value.duration, 0)
-    const filename = [values.calendar?.summary, toISODate(values.start), toISODate(values.end)].join('-')
+    const filename = [toISODate(values.start), toISODate(values.end)].join('-')
 
     const onCalendarChange: SelectInputProps['onChange'] = async (e) => {
-        const c = calendars.find((c) => c.id === e.target.value);
-        const newValues = {...values, calendar: c};
+        const value = e.target.value as string[];
+        const newValues = {...values, selectedCalendars: calendars.filter(c => value.includes(c.id))};
         setValues(newValues)
         await fetchEvents(newValues);
     }
@@ -146,13 +149,16 @@ export const useEventQueryState = (): UseEventQueryState => {
         await fetchEvents(values);
     }
 
-    const fetchEvents = async (values: { calendar?: GoogleCalendar; start: Date; end: Date; }) => {
-        const events = await googleClient.getEvents({
-            calendarId: values.calendar?.id,
-            timeMin: values.start,
-            timeMax: values.end
-        });
-        setEvents(events);
+    const fetchEvents = async (values: EventQueryFormValues) => {
+        const events = await Promise.all(values.selectedCalendars.map((calendar) => {
+            return googleClient.getEvents({
+                calendarId: calendar?.id,
+                calendarTitle: calendar.name,
+                timeMin: values.start,
+                timeMax: values.end
+            });
+        }))
+        setEvents(events.flat());
     }
 
 

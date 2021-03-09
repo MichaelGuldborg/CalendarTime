@@ -1,7 +1,31 @@
 # Calendar Time
 > This is the repository of the opensource web application Calendar Time
 
-The application allows for exporting google calendar events to csv and pdf formats 
+The application allows for exporting google calendar events to csv and pdf formats
+
+
+## Features
+
+| Name                  | Description                                                       |  Done   |
+| --------------------- | ----------------------------------------------------------------  | :-----: |
+| Sign in with google   |																	| &#9745; |
+| Sign in with microsoft|																	| &#9745; |
+| --- Export 			|																	| &#9745; |
+| Preview events 		|																	| &#9745; |
+| Export to csv 		|																	| &#9745; |
+| Export to pdf 		|																	| &#9745; |
+| Export to html 		|																	| &#9744; |
+| Export to Excel 2007 	|																	| &#9744; |
+| --- Filter/Sort 		|																	| &#9745; |
+| Date interval	 		|																	| &#9745; |
+| Additional fields 	|																	| &#9745; |
+| All day events 		|																	| &#9745; |
+| Text search	 		| Search title, description and location for specific keywords		| &#9745; |
+| Add #hashtags 	 	| Add #hashtags from description and title as a unique field		| &#9744; |
+| --- Dev/Ops 			|																	| &#9745; |
+| CI/CD 				| Continous deployment flow with Fastlane and GitLab Runner			| &#9744; |
+
+
 
 ## Installation
 
@@ -33,3 +57,10 @@ yarn test
 # Build the app for production to the `build` folder
 yarn build
 ```
+
+
+
+## Notes
+
+https://timetackle.crisp.help/en/article/tagging-your-calendar-events-ze2yce/?1600801914519
+https://crisp.chat/en/knowledge/

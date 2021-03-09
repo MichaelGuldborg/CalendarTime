@@ -3,26 +3,7 @@ import Box from "@material-ui/core/Box";
 import {Bar} from "react-chartjs-2";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
 import countByLabel, {filterDateCountMap} from "../../functions/countByLabel";
-
-const backgroundColors = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)'
-];
-const borderColors = [
-    'rgba(255, 99, 132, 1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)'
-];
-
-const chartBackgroundColors = (length: number) => new Array(length).fill(0).map((e, i) => backgroundColors[i % backgroundColors.length])
-const chartBorderColors = (length: number) => new Array(length).fill(0).map((e, i) => borderColors[i % borderColors.length])
+import {chartBackgroundColors, chartBorderColors} from "../../functions/chartColors";
 
 
 const countByStartDate = (events: GoogleCalendarEvent[]) => countByLabel(events, (e) => {
@@ -31,13 +12,13 @@ const countByStartDate = (events: GoogleCalendarEvent[]) => countByLabel(events,
 })
 
 
-export interface EventBarChartProps {
+export interface EventCountBarChartProps {
     events: GoogleCalendarEvent[];
     start: Date;
     end: Date;
 }
 
-export const EventBarChart: React.FC<EventBarChartProps> = ({events, start, end}) => {
+export const EventCountBarChart: React.FC<EventCountBarChartProps> = ({events, start, end}) => {
 
     const countMap = filterDateCountMap(countByStartDate(events), start, end)
     const labels = Object.keys(countMap).sort((a, b) => a.localeCompare(b));
@@ -67,4 +48,4 @@ export const EventBarChart: React.FC<EventBarChartProps> = ({events, start, end}
     )
 }
 
-export default EventBarChart;
+export default EventCountBarChart;

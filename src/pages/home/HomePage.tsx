@@ -23,10 +23,11 @@ import {useEventQueryState} from "../../useEventQueryState";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowDownIcon from 'remixicon-react/ArrowDownSLineIcon'
 import ArrowUpIcon from 'remixicon-react/ArrowUpSLineIcon'
-import EventBarChart from "./EventBarChart";
+import EventCountBarChart from "./EventCountBarChart";
 import {EventTable} from "./EventTable";
 import TemplateInput from "./TemplateInput";
 import {ActionButton} from "../../components/buttons/ActionButton";
+import EventCalendarPieChart from "./EventCalendarPieChart";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -88,8 +89,9 @@ const HomePage: React.FC = () => {
                         <SelectNamed
                             fullWidth
                             variant="outlined"
+                            multiple
                             options={values.calendars}
-                            value={values.calendar?.id ?? ''}
+                            value={values.selectedCalendars.map(c => c.id)}
                             onChange={onCalendarChange}
                         />
                     </Grid>
@@ -237,13 +239,19 @@ const HomePage: React.FC = () => {
                 </Grid>
                 <Grid item xl={4}>
                     <Paper elevation={6} className={classes.paper}>
-                        <EventBarChart
+                        <EventCountBarChart
                             events={values.events}
                             start={values.start}
                             end={values.end}
                         />
                     </Paper>
                 </Grid>
+                <Grid item xl={4}>
+                    <Paper elevation={6} className={classes.paper}>
+                        <EventCalendarPieChart events={values.events}/>
+                    </Paper>
+                </Grid>
+
 
             </Grid>
 

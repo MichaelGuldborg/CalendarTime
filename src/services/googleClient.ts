@@ -4,6 +4,14 @@ import googleAPIConfig from "../constants/googleAPIConfig";
 
 
 let googleAPI: any = undefined;
+
+const isInfoCalendar = (c: GoogleCalendar) => {
+    // check if the calendar is a default google info calendar
+    const calendarIdHash = c.id.split('@')?.[1];
+    return calendarIdHash === 'group.v.calendar.google.com';
+}
+
+
 export const googleClient = {
     isSignedIn: false,
     initialize: () => {
@@ -37,13 +45,14 @@ export const googleClient = {
         const responseBody: { items: GoogleCalendar[] } = JSON.parse(response.body);
         return responseBody.items.filter((c) => {
             if (accessRole && accessRole !== c.accessRole) return false;
-            return true;
+            return !isInfoCalendar(c);
+
         }).map(c => ({
             ...c,
-            name: c.summary,
+            name: c.summaryOverride || c.summary,
         }))
     },
-    getEvents: async ({calendarId, timeMin, timeMax}: { calendarId?: string, timeMin: Date, timeMax: Date }) => {
+    getEvents: async ({calendarId, calendarTitle, timeMin, timeMax}: { calendarId: string, calendarTitle: string, timeMin: Date, timeMax: Date }): Promise<GoogleCalendarEvent[]> => {
         if (calendarId === undefined) return [];
         const response = await googleAPI.client.calendar.events.list({
             calendarId: calendarId,
@@ -57,11 +66,13 @@ export const googleClient = {
         const responseBody: { items: GoogleCalendarEvent[] } = JSON.parse(response.body);
         return responseBody.items.map(e => ({
             ...e,
+            calendarId: calendarId,
+            calendarTitle: calendarTitle,
             duration: getEventDuration(e),
             createdByEmail: e.creator?.email,
             createdByName: e.creator?.displayName,
         }));
-    }
+    },
 }
 
 const getEventDuration = (event: GoogleCalendarEvent) => {

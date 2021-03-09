@@ -4,6 +4,7 @@ export interface GoogleCalendar {
     id: string,
     name: string,
     summary: string,
+    summaryOverride?: string,
     description: string,
     timeZone: string,
     colorId: string,

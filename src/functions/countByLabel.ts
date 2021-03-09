@@ -1,9 +1,9 @@
-
-export const countByLabel = <T, >(list: T[], getLabel: (e: T) => string) => {
+export const countByLabel = <T, >(list: T[], getLabel: (e: T) => string, getValue?: (e: T) => number) => {
     if (!list || !list[0]) return {};
-    return list.reduce<{ [p: string]: number }>((result, value) => {
-        const label = getLabel(value);
-        result[label] = !result[label] ? 1 : result[label] + 1;
+    return list.reduce<{ [p: string]: number }>((result, element) => {
+        const label = getLabel(element);
+        const value = getValue?.(element) ?? 1;
+        result[label] = !result[label] ? value : result[label] + value;
         return result;
     }, {});
 }

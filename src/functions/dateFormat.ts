@@ -4,15 +4,15 @@ export const twoDigit = (s: string | number): string => `${s}`.padStart(2, "0");
 //     return [date.getFullYear(), twoDigit(date.getMonth() + 1), twoDigit(date.getDate())].join("-");
 // };
 
-const secondMillis = 1000;
-const twoSecondMillis = 2000;
-const minuteMillis = 60000;
-const twoMinuteMillis = 120000;
-const hourMillis = 3600000;
-const twoHourMillis = 7200000;
-const dayMillis = 86400000;
-const twoDayMillis = 172800000;
-const weekMillis = 604800000;
+export const secondMillis = 1000;
+export const twoSecondMillis = 2000;
+export const minuteMillis = 60000;
+export const twoMinuteMillis = 120000;
+export const hourMillis = 3600000;
+export const twoHourMillis = 7200000;
+export const dayMillis = 86400000;
+export const twoDayMillis = 172800000;
+export const weekMillis = 604800000;
 
 export const startLastMonth = new Date();
 startLastMonth.setMonth(startLastMonth.getMonth() - 1, 1);
