@@ -6,25 +6,25 @@ The application allows for exporting google calendar events to csv and pdf forma
 
 ## Features
 
-| Name                  | Description                                                       |  Done   |
-| --------------------- | ----------------------------------------------------------------  | :-----: |
-| Sign in with google   |																	| &#9745; |
-| Sign in with microsoft|																	| &#9745; |
-| --- Export 			|																	| &#9745; |
-| Preview events 		|																	| &#9745; |
-| Export to csv 		|																	| &#9745; |
-| Export to pdf 		|																	| &#9745; |
-| Export to html 		|																	| &#9744; |
-| Export to Excel 2007 	|																	| &#9744; |
-| --- Filter/Sort 		|																	| &#9745; |
-| Date interval	 		|																	| &#9745; |
-| Additional fields 	|																	| &#9745; |
-| All day events 		|																	| &#9745; |
-| Text search	 		| Search title, description and location for specific keywords		| &#9745; |
-| Add #hashtags 	 	| Add #hashtags from description and title as a unique field		| &#9744; |
-| --- Dev/Ops 			|																	| &#9745; |
-| Pre-push lint check 	| Add local lint and type check before push to master/staging branch| &#9744; |
-| CI/CD 				| Continous deployment flow to netlify								| &#9744; |
+| Name                   | Description                                                       	|  Done   |
+| ---------------------  | ---------------------------------------------------------------- 	| :-----: |
+| Sign in with google    |																		| &#9745; |
+| Sign in with microsoft |																		| &#9744; |
+| --- Show/Export 		 |																		| &#9745; |
+| Preview events 		 |																		| &#9745; |
+| Export to csv 		 |																		| &#9745; |
+| Export to pdf 		 |																		| &#9745; |
+| Export to html 		 |																		| &#9744; |
+| Export to Excel 2007 	 |																		| &#9744; |
+| --- Filter/Sort 		 |																		| &#9745; |
+| Date interval	 		 |																		| &#9745; |
+| Additional fields 	 |																		| &#9745; |
+| All day events 		 |																		| &#9745; |
+| Text search	 		 | Search title, description and location for specific keywords			| &#9745; |
+| Add #hashtags 	 	 | Add #hashtags from description and title as a unique fields			| &#9744; |
+| --- Dev/Ops 			 |																		| &#9745; |
+| Pre-push lint check 	 | Add local lint and type check before push to master/staging branch	| &#9745; |
+| CI/CD 				 | Continous deployment flow to netlify									| &#9745; |
 
 
 
