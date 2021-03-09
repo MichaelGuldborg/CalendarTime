@@ -23,7 +23,8 @@ The application allows for exporting google calendar events to csv and pdf forma
 | Text search	 		 | Search title, description and location for specific keywords			| &#9745; |
 | Add #hashtags 	 	 | Add #hashtags from description and title as a unique fields			| &#9744; |
 | --- Dev/Ops 			 |																		| 		  |
-| Pre-push lint check 	 | Add local lint and type check before push to master/staging branch	| &#9745; |
+| Pre-push lint check 	 | Add local lint and type check before push to deploy branches			| &#9745; |
+| Auto-versioning	 	 | Automatically increase version number before push to deploy branches	| &#9745; |
 | CI/CD 				 | Continous deployment flow to netlify									| &#9745; |
 
 
@@ -50,6 +51,9 @@ The following is a list of commands available
 ```bash
 # Run the app in the development mode
 yarn start
+
+# Check if eslint or typescript compile contains errors/warnings
+yarn lint:check
 
 # Launch the test runner in the interactive watch mode
 yarn test
