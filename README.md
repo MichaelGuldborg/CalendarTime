@@ -23,7 +23,8 @@ The application allows for exporting google calendar events to csv and pdf forma
 | Text search	 		| Search title, description and location for specific keywords		| &#9745; |
 | Add #hashtags 	 	| Add #hashtags from description and title as a unique field		| &#9744; |
 | --- Dev/Ops 			|																	| &#9745; |
-| CI/CD 				| Continous deployment flow with Fastlane and GitLab Runner			| &#9744; |
+| Pre-push lint check 	| Add local lint and type check before push to master/staging branch| &#9744; |
+| CI/CD 				| Continous deployment flow to netlify								| &#9744; |
 
 
 
