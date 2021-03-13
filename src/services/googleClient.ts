@@ -36,8 +36,10 @@ export const googleClient = {
             });
         };
     },
-    signIn: () => {
-        return googleAPI.auth2.getAuthInstance().signIn();
+    signIn: async () => {
+        const auth = googleAPI.auth2.getAuthInstance();
+        const user = await auth.signIn();
+        return user.getId();
     },
     getCalendarList: async ({accessRole}: { accessRole?: 'reader' | 'writer' | 'owner' } = {}) => {
         const response = await googleAPI.client.calendar.calendarList.list();

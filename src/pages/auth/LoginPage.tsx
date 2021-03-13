@@ -36,20 +36,15 @@ const LoginPage: React.FC = () => {
     const classes = useStyles();
     const history = useHistory();
 
-    const signInAction = useMutation({
-        mutationKey: 'signIn',
-        onMutate: googleClient.signIn,
-        onSettled: (response) => {
-            if (!('' + response).includes('error')) {
-                history.push(Routes.home)
-            }
+    const signInAction = useMutation('signIn', googleClient.signIn, {
+        onSettled: (data, error, variables) => {
+            if (!error) history.push(Routes.home)
         },
     });
-
-
     const handleLoginClick = async () => {
         signInAction.mutate();
     }
+
 
     return (
         <FullGridPage>
