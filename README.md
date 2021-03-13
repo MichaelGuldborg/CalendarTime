@@ -4,8 +4,6 @@
 The primary functionality of this application is to provide the user with insight into google calendar events.
 This insight can be used to create timesheets or evaluate priorities for different activities.
 
-
-
 ## Features
 
 | Name                   | Description                                                       	|  Done   |
@@ -32,18 +30,12 @@ This insight can be used to create timesheets or evaluate priorities for differe
 
 ## Installation
 
-In order to run the application for development you must create a google api config file and include it at the root of the application.
+In order to run the application for development you must add an environment file to the root directory with valid google API credentials.
 
-The file should be name `apiGoogleconfig.json` and contain the following values
-```json
-{
-  "clientId": "xxxxxxxx-xxxxxxxx.apps.googleusercontent.com",
-  "apiKey": "xxxxxxxx",
-  "scope": "https://www.googleapis.com/auth/calendar",
-  "discoveryDocs": [
-    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
-  ]
-}
+The file should be name `.end.development` and contain the following values
+```shell script
+REACT_APP_GOOGLE_CLIENT_ID=xxxxxxxx
+REACT_APP_GOOGLE_API_KEY=xxxxxxxx
 ```
 
 ## Development
@@ -65,8 +57,3 @@ yarn build
 ```
 
 
-
-## Notes
-
-https://timetackle.crisp.help/en/article/tagging-your-calendar-events-ze2yce/?1600801914519
-https://crisp.chat/en/knowledge/
