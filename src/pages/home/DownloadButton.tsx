@@ -7,10 +7,11 @@ import {ActionButton} from "../../components/buttons/ActionButton";
 import pdfMakeX from 'pdfmake/build/pdfmake.js';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import config from "../../constants/config";
+import {googleClient} from "../../services/googleClient";
 
 const pdfFontsX = require('pdfmake-unicode/dist/pdfmake-unicode.js');
 
-export type DownloadFormat = 'csv' | 'pdf' | 'html';
+export type DownloadFormat = 'csv' | 'pdf' | 'html' | 'sheets';
 pdfMakeX.vfs = pdfFontsX.pdfMake.vfs;
 
 export interface DownloadButtonProps {
@@ -35,6 +36,8 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
                 return downloadCSV();
             } else if (format === "pdf") {
                 return downloadPDF()
+            } else if (format === "sheets") {
+                return googleClient.createSheet('TESTAAAAAAA');
             } else {
                 return downloadHTML();
             }

@@ -141,7 +141,12 @@ export const useEventQueryState = (): UseEventQueryState => {
         });
     }
     const onDownloadFormatChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
-        if (v === 'csv' || v === 'pdf' || v === 'html') return setValues({...values, downloadFormat: v});
+        if (v === 'csv' || v === 'pdf' || v === 'html' || v === 'sheets') {
+            return setValues({
+                ...values,
+                downloadFormat: v
+            });
+        }
     }
 
     const handleSetValues = async (values: EventQueryFormValues) => {
