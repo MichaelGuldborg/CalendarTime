@@ -206,11 +206,11 @@ const HomePage: React.FC = () => {
                                 control={<Radio color='primary'/>}
                                 label="PDF"
                             />
-                            {/*<FormControlLabel*/}
-                            {/*    value='html'*/}
-                            {/*    control={<Radio color='primary'/>}*/}
-                            {/*    label="HTML"*/}
-                            {/*/>*/}
+                            <FormControlLabel
+                                value='sheets'
+                                control={<Radio color='primary'/>}
+                                label="SHEETS"
+                            />
                         </RadioGroup>
                         <div style={{flex: 1}}/>
                         <DownloadButton

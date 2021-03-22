@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 // import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 // import DateFnsUtils from "@date-io/date-fns";
@@ -13,11 +13,16 @@ import DateFnsUtils from "@date-io/date-fns";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ThemeProvider} from "@material-ui/core";
 import createTheme from "./constants/theme";
-
+import ReactGA from 'react-ga';
 
 const queryClient = new QueryClient();
 
 const App = () => {
+
+    useEffect(() => {
+        ReactGA.pageview(window.location.pathname + window.location.search);
+    });
+
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider theme={createTheme()}>

@@ -75,6 +75,28 @@ export const googleClient = {
             createdByName: e.creator?.displayName,
         }));
     },
+
+    createSheet: async (title: string) => {
+        await googleAPI.client.sheets.spreadsheets.create({
+            properties: {
+                title: title
+            },
+            sheets: [{
+                properties: {
+                    title: 'Ark1',
+                },
+                date: {
+                    rowDate: [{
+                        values: [{
+                            userEnteredValue: {
+                                stringValue: 'test'
+                            }
+                        }]
+                    }]
+                }
+            }]
+        });
+    }
 }
 
 const getEventDuration = (event: GoogleCalendarEvent) => {
