@@ -98,6 +98,7 @@ export const useEventQueryState = (): UseEventQueryState => {
             searchTerm.toLowerCase();
             return summaryLower.includes(searchTerm) || descriptionLower.includes(searchTerm) || locationLower.includes(searchTerm);
         });
+        return false;
     })
 
     const totalDuration = filteredEvents.reduce<number>((result, value) => result + value.duration, 0)
