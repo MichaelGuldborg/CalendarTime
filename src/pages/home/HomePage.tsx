@@ -18,6 +18,7 @@ import SearchInput from "../../components/inputs/SearchInput";
 import Paper from "@material-ui/core/Paper";
 import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
+import AddFillIcon from 'remixicon-react/AddFillIcon';
 import Grid from "@material-ui/core/Grid";
 import {useEventQueryState} from "../../useEventQueryState";
 import IconButton from "@material-ui/core/IconButton";
@@ -79,6 +80,11 @@ const HomePage: React.FC = () => {
 
     const [showAll, setShowAll] = useState(true);
 
+    const handleSearchChange = (newSearch: string, index: number) => {
+        let searchCopy = [...values.search];
+        searchCopy[index] = newSearch;
+        setSearch(searchCopy);
+    };
 
     return (
         <div className={classes.root}>
@@ -122,20 +128,29 @@ const HomePage: React.FC = () => {
                     </Grid>
                 </Grid>
 
-
                 <div className={showAll ? classes.showAll : classes.hideAll}>
                     <Divider className={classes.divider}/>
-
-
-                    <InputRow title={'Search filter:'}>
-                        <SearchInput search={values.search} onChange={setSearch}/>
-                        <div style={{display: 'flex', alignItems: 'center', marginLeft: 16}}>
-                            <Tooltip
-                                title={"Search will check if the event title, description or location contains the entered search value"}>
-                                <div><InformationIcon/></div>
-                            </Tooltip>
-                        </div>
-                    </InputRow>
+                    {values.search.map((search, index) => {
+                        return (
+                            <InputRow title={'Search filter:'} key={index}>
+                                <SearchInput search={search} onChange={newSearch => handleSearchChange(newSearch, index)}/>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <Tooltip
+                                        title={"Search will check if the event title, description or location contains the entered search value"}
+                                        style={{marginLeft: 16}}
+                                    >
+                                        <div><InformationIcon/></div>
+                                    </Tooltip>
+                                    <Tooltip
+                                        title={"Add another search filter."}
+                                        style={{marginLeft: 16}}
+                                        onClick={() => setSearch([...values.search, ''])}
+                                    >
+                                        <div><AddFillIcon/></div>
+                                    </Tooltip>
+                                </div>
+                            </InputRow>)})
+                    }
 
                     <InputRow title={'All Day filter:'}>
                         <RadioGroup row name="allDayOnly" value={'' + values.allDayOnly} onChange={onAllDayOnlyChange}>
