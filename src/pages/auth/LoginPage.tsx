@@ -61,7 +61,7 @@ const LoginPage: React.FC = () => {
                     onClick={handleLoginClick}
                 >
                     <GoogleIcon style={{marginRight: 16}}/>
-                    Sing in with Google
+                    Sign in with Google
                 </Button>
                 <FeedbackDisplay
                     error={(signInAction.error as any)?.error}
