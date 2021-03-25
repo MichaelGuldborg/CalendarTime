@@ -19,7 +19,7 @@ export interface EventQueryStateFunctions {
     onStartChange: (date: MaterialUiPickersDate) => void;
     onEndChange: (date: MaterialUiPickersDate) => void;
     onAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
-    setSearch: Dispatch<SetStateAction<string>>;
+    setSearch: Dispatch<SetStateAction<Array<string>>>;
     onShowTotalDurationChange: SwitchBaseProps["onChange"];
     handleFieldsChange: (p: string) => SwitchBaseProps["onChange"];
     onDownloadFormatChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
@@ -28,7 +28,7 @@ export interface EventQueryStateFunctions {
 
 
 export interface EventQueryState extends EventQueryFormValues {
-    search: string;
+    search: string[];
     totalDuration: number;
     calendars: GoogleCalendar[];
     events: GoogleCalendarEvent[];
@@ -70,8 +70,7 @@ export const useEventQueryState = (): UseEventQueryState => {
         },
     });
 
-    const [search, setSearch] = useState('');
-    const searchLower = search.toLowerCase();
+    const [search, setSearch] = useState(['']);
 
     const calendarListQuery = useQuery({
         queryKey: 'calendarList',
@@ -95,7 +94,10 @@ export const useEventQueryState = (): UseEventQueryState => {
         const summaryLower = e.summary?.toLowerCase();
         const descriptionLower = e.description?.toLowerCase() ?? '';
         const locationLower = e.location?.toLowerCase() ?? '';
-        return summaryLower.includes(searchLower) || descriptionLower.includes(searchLower) || locationLower.includes(searchLower);
+        search.map(searchTerm => {
+            searchTerm.toLowerCase();
+            return summaryLower.includes(searchTerm) || descriptionLower.includes(searchTerm) || locationLower.includes(searchTerm);
+        });
     })
 
     const totalDuration = filteredEvents.reduce<number>((result, value) => result + value.duration, 0)
