@@ -47,7 +47,7 @@ export const toLocalTime = (input: Date | string): string => {
 };
 
 export const toHourMinuteText = (diff: number) => {
-    const hours = (diff / 3600000);
+    const hours = Math.floor((diff / 3600000));
     const minutes = (diff - hours * 3600000) / 60000;
     return [hours.toFixed(), twoDigit(minutes)].join(':')
 };

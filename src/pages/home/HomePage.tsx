@@ -20,14 +20,12 @@ import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
 import Grid from "@material-ui/core/Grid";
 import {useEventQueryState} from "../../useEventQueryState";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowDownIcon from 'remixicon-react/ArrowDownSLineIcon'
-import ArrowUpIcon from 'remixicon-react/ArrowUpSLineIcon'
-import EventCountBarChart from "./EventCountBarChart";
 import {EventTable} from "./EventTable";
 import TemplateInput from "./TemplateInput";
 import {ActionButton} from "../../components/buttons/ActionButton";
-import EventCalendarPieChart from "./EventCalendarPieChart";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowUpIcon from "remixicon-react/ArrowUpSLineIcon";
+import ArrowDownIcon from "remixicon-react/ArrowDownSLineIcon";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -101,17 +99,7 @@ const HomePage: React.FC = () => {
                     <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
                         <DateInput value={values.end} onChange={onEndChange}/>
                     </Grid>
-                    <Grid item xs={12} sm={1} md={1} lg={1} xl={1} style={{display: 'flex'}}>
-                        <div>
-                            <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
-                                <IconButton onClick={() => setShowAll(!showAll)}>
-                                    {showAll ? <ArrowUpIcon/> : <ArrowDownIcon/>}
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                    </Grid>
-
-                    <Grid item xs={12} sm={11} md={11} lg={2} xl={5}
+                    <Grid item xs={12} sm={12} md={12} lg={3} xl={6}
                           style={{display: 'flex', justifyContent: 'flex-end'}}
                     >
                         <ActionButton
@@ -223,11 +211,19 @@ const HomePage: React.FC = () => {
                     </InputRow>
                 </div>
 
+                <div style={{marginBottom: '-16px'}}>
+                    <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
+                        <IconButton onClick={() => setShowAll(!showAll)}>
+                            {showAll ? <ArrowUpIcon/> : <ArrowDownIcon/>}
+                        </IconButton>
+                    </Tooltip>
+                </div>
+
             </Paper>
 
 
             <Grid container>
-                <Grid item xl={12}>
+                <Grid item xs={12}>
                     <Paper elevation={6} className={classes.paper}>
                         <EventTable
                             additionalFields={additionalFields}
