@@ -233,25 +233,7 @@ const HomePage: React.FC = () => {
                         />
                     </Paper>
                 </Grid>
-                {/*<Grid item xl={4}>*/}
-                {/*    <Paper elevation={6} className={classes.paper}>*/}
-                {/*        <EventCountBarChart*/}
-                {/*            events={values.events}*/}
-                {/*            start={values.start}*/}
-                {/*            end={values.end}*/}
-                {/*        />*/}
-                {/*    </Paper>*/}
-                {/*</Grid>*/}
-                {/*<Grid item xl={4}>*/}
-                {/*    <Paper elevation={6} className={classes.paper}>*/}
-                {/*        <EventCalendarPieChart events={values.events}/>*/}
-                {/*    </Paper>*/}
-                {/*</Grid>*/}
-
-
             </Grid>
-
-
         </div>
     );
 };
