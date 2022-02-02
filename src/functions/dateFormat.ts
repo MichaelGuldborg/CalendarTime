@@ -22,6 +22,12 @@ export const endLastMonth = new Date();
 endLastMonth.setMonth(endLastMonth.getMonth(), 0);
 endLastMonth.setHours(0, 0, 0)
 
+export const toDateKey = (input: Date | string): string => {
+    if (input === undefined) return '';
+    const date = new Date(input);
+    return `${twoDigit(date.getDate())}${twoDigit(date.getMonth() + 1)}${date.getFullYear()}`
+};
+
 export const toISODate = (input: Date | string): string => {
     if (input === undefined) return '';
     const date = new Date(input);

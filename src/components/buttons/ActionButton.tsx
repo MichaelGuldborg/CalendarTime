@@ -8,7 +8,7 @@ export interface ActionButtonProps {
     onClick?: VoidFunction;
 }
 
-export const ActionButton: React.FC<ActionButtonProps> = ({children,text, icon: Icon, onClick}) => {
+export const ActionButton: React.FC<ActionButtonProps> = ({children, text, icon: Icon, onClick}) => {
     return (
         <Button
             variant="contained"
@@ -17,7 +17,12 @@ export const ActionButton: React.FC<ActionButtonProps> = ({children,text, icon: 
             onClick={onClick}
         >
             <span>{text || children}</span>
-            {Icon && <Icon style={{marginLeft: 8}}/>}
+            {Icon && <Icon style={{
+                width: 24,
+                height: 24,
+                minWidth: 16,
+                marginLeft: 8,
+            }}/>}
         </Button>
     )
 }

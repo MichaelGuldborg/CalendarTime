@@ -15,7 +15,6 @@ import RefreshIcon from "remixicon-react/RefreshLineIcon";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import InputRow from "./InputRow";
 import SearchInput from "../../components/inputs/SearchInput";
-import Paper from "@material-ui/core/Paper";
 import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
 import Grid from "@material-ui/core/Grid";
@@ -36,14 +35,22 @@ const useStyles = makeStyles((theme) => ({
     toolbar: {
         display: 'flex',
         flexDirection: 'column',
+        margin: theme.spacing(4, 0, 0, 0),
         padding: theme.spacing(2, 6),
+        // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
     },
     divider: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
     },
     paper: {
-        margin: theme.spacing(4, 6)
+        margin: theme.spacing(4, 6),
+        // position: 'relative',
+        // transition: 'all 150ms cubic-bezier(0.694, 0.0482, 0.335, 1)',
+        boxShadow: '4px 4px 24px 24px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
+        // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
+        // overflow: 'hidden',
+        borderRadius: 4,
     },
     showAll: {
         maxHeight: "2000px",
@@ -68,20 +75,19 @@ const HomePage: React.FC = () => {
         setSearch,
         onShowTotalDurationChange,
         handleFieldsChange,
-        onDownloadFormatChange,
         refreshEvents,
     }] = useEventQueryState();
 
 
     const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
 
-    const [showAll, setShowAll] = useState(true);
+    const [showAll, setShowAll] = useState(false);
 
 
     return (
         <div className={classes.root}>
 
-            <Paper className={classes.toolbar} elevation={6}>
+            <div className={classes.toolbar}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
                         <SelectNamed
@@ -102,6 +108,22 @@ const HomePage: React.FC = () => {
                     <Grid item xs={12} sm={12} md={12} lg={3} xl={6}
                           style={{display: 'flex', justifyContent: 'flex-end'}}
                     >
+                        <DownloadButton
+                            events={values.events}
+                            showTotalDuration={values.showTotalDuration}
+                            totalDuration={values.totalDuration}
+                            filename={values.filename}
+                            format={'csv'}
+                        />
+                        <div style={{width: 16}}/>
+                        <DownloadButton
+                            events={values.events}
+                            showTotalDuration={values.showTotalDuration}
+                            totalDuration={values.totalDuration}
+                            filename={values.filename}
+                            format={'pdf'}
+                        />
+                        <div style={{width: 16}}/>
                         <ActionButton
                             text='REFRESH EVENTS'
                             icon={RefreshIcon}
@@ -177,61 +199,29 @@ const HomePage: React.FC = () => {
                             setValues={setValues}
                         />
                     </InputRow>
-
-                    <InputRow title={'Download format:'}>
-                        <RadioGroup
-                            row
-                            name="fileFormat" value={values.downloadFormat}
-                            onChange={onDownloadFormatChange}
-                        >
-                            <FormControlLabel
-                                value='csv'
-                                control={<Radio color='primary'/>}
-                                label="CSV"
-                            />
-                            <FormControlLabel
-                                value='pdf'
-                                control={<Radio color='primary'/>}
-                                label="PDF"
-                            />
-                            <FormControlLabel
-                                value='sheets'
-                                control={<Radio color='primary'/>}
-                                label="SHEETS"
-                            />
-                        </RadioGroup>
-                        <div style={{flex: 1}}/>
-                        <DownloadButton
-                            events={values.events}
-                            showTotalDuration={values.showTotalDuration}
-                            totalDuration={values.totalDuration}
-                            filename={values.filename}
-                            format={values.downloadFormat}
-                        />
-                    </InputRow>
                 </div>
 
-                <div style={{marginBottom: '-16px'}}>
+                <div style={{marginBottom: '-16px', display: 'flex', justifyContent: 'flex-end'}}>
                     <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
-                        <IconButton onClick={() => setShowAll(!showAll)}>
+                        <IconButton onClick={() => setShowAll(!showAll)} color={"primary"}>
                             {showAll ? <ArrowUpIcon/> : <ArrowDownIcon/>}
                         </IconButton>
                     </Tooltip>
                 </div>
 
-            </Paper>
+            </div>
 
 
             <Grid container>
                 <Grid item xs={12}>
-                    <Paper elevation={6} className={classes.paper}>
+                    <div className={classes.paper}>
                         <EventTable
                             additionalFields={additionalFields}
                             events={values.events}
                             showTotalDuration={values.showTotalDuration}
                             totalDuration={values.totalDuration}
                         />
-                    </Paper>
+                    </div>
                 </Grid>
             </Grid>
         </div>

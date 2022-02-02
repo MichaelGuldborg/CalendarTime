@@ -57,11 +57,11 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                         </TableRow>
                     ))}
                     {showTotalDuration && <TableRow key={'total'}>
-                        {[0, 1, 2, ...additionalFields].map((e,i) => <TableCell key={'sum-' + i}/>)}
-                        <TableCell component="th" scope="row">
+                        {[0, 1, 2, ...additionalFields].map((e,i) => <TableCell key={'sum-' + i} style={{borderBottom: 'none'}}/>)}
+                        <TableCell component="th" scope="row" style={{borderBottom: 'none'}}>
                             TOTAL
                         </TableCell>
-                        <TableCell>{toHourMinuteText(totalDuration)}</TableCell>
+                        <TableCell style={{borderBottom: 'none'}}>{toHourMinuteText(totalDuration)}</TableCell>
                     </TableRow>}
                 </TableBody>
             </Table>

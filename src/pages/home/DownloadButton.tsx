@@ -110,7 +110,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
 
         return (
             <ActionButton
-                text='DOWNLOAD'
+                text={format.toUpperCase()}
                 icon={FileDownloadIcon}
                 onClick={handleDownloadClick}
             />

@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
-import {endLastMonth, startLastMonth, toISODate} from "./functions/dateFormat";
+import {endLastMonth, startLastMonth, toDateKey} from "./functions/dateFormat";
 import GoogleCalendar from "./models/GoogleCalendar";
 import {useQuery} from "react-query";
 import {googleClient} from "./services/googleClient";
@@ -8,7 +8,6 @@ import {SelectInputProps} from "@material-ui/core/Select/SelectInput";
 import {DatePickerProps} from "@material-ui/pickers";
 import {SwitchBaseProps} from "@material-ui/core/internal/SwitchBase";
 import {MaterialUiPickersDate} from "@material-ui/pickers/typings/date";
-import {DownloadFormat} from "./pages/home/DownloadButton";
 
 
 export type UseEventQueryState = [EventQueryState, EventQueryStateFunctions];
@@ -22,7 +21,6 @@ export interface EventQueryStateFunctions {
     setSearch: Dispatch<SetStateAction<string>>;
     onShowTotalDurationChange: SwitchBaseProps["onChange"];
     handleFieldsChange: (p: string) => SwitchBaseProps["onChange"];
-    onDownloadFormatChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
     refreshEvents: () => Promise<void>;
 }
 
@@ -41,7 +39,6 @@ export interface EventQueryFormValues {
     end: Date;
     allDayOnly: boolean;
     showTotalDuration: boolean;
-    downloadFormat: DownloadFormat;
     additionalFields: {
         createdByEmail: boolean;
         createdByName: boolean;
@@ -59,7 +56,6 @@ export const useEventQueryState = (): UseEventQueryState => {
         end: endLastMonth,
         allDayOnly: false,
         showTotalDuration: true,
-        downloadFormat: 'csv',
         additionalFields: {
             createdByEmail: false,
             createdByName: false,
@@ -99,7 +95,10 @@ export const useEventQueryState = (): UseEventQueryState => {
     })
 
     const totalDuration = filteredEvents.reduce<number>((result, value) => result + value.duration, 0)
-    const filename = [toISODate(values.start), toISODate(values.end)].join('-')
+    const calendarName = values.selectedCalendars.map(e => e.name).join('+');
+    const startName = toDateKey(values.start);
+    const endName = toDateKey(values.end);
+    const filename = [calendarName, startName, endName].join('-')
 
     const onCalendarChange: SelectInputProps['onChange'] = async (e) => {
         const value = e.target.value as string[];
@@ -140,14 +139,6 @@ export const useEventQueryState = (): UseEventQueryState => {
             }
         });
     }
-    const onDownloadFormatChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
-        if (v === 'csv' || v === 'pdf' || v === 'html' || v === 'sheets') {
-            return setValues({
-                ...values,
-                downloadFormat: v
-            });
-        }
-    }
 
     const handleSetValues = async (values: EventQueryFormValues) => {
         setValues(values);
@@ -183,7 +174,6 @@ export const useEventQueryState = (): UseEventQueryState => {
         onShowTotalDurationChange,
         setSearch,
         handleFieldsChange,
-        onDownloadFormatChange,
         refreshEvents: () => fetchEvents(values),
     }]
 }
