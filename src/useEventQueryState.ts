@@ -88,7 +88,7 @@ export const useEventQueryState = (): UseEventQueryState => {
     const filteredEvents = events.filter(e => {
         if (values.allDayOnly && e.start.date === undefined) return false;
         if (!values.allDayOnly && e.start.dateTime === undefined) return false;
-        const summaryLower = e.summary?.toLowerCase();
+        const summaryLower = e.summary?.toLowerCase() ?? '';
         const descriptionLower = e.description?.toLowerCase() ?? '';
         const locationLower = e.location?.toLowerCase() ?? '';
         return summaryLower.includes(searchLower) || descriptionLower.includes(searchLower) || locationLower.includes(searchLower);
