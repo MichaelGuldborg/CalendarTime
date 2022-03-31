@@ -24,6 +24,7 @@ export interface GoogleCalendarEvent {
     duration: number,
     createdByEmail?: string
     createdByName?: string
+    count?: number;
 }
 
 export default GoogleCalendarEvent;

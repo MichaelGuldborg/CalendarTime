@@ -1,12 +1,18 @@
 import React from "react";
 import {DatePicker, DatePickerProps} from "@mui/lab";
-import {Popover} from "@mui/material";
+import {Popover, TextField} from "@mui/material";
 
-type PopoverDatePickerProps = DatePickerProps & {
+type PopoverDatePickerProps = Omit<DatePickerProps, "renderInput"> & {
     children: JSX.Element;
 }
 
-export const PopoverDatePicker: React.FC<PopoverDatePickerProps> = ({children, onChange, ...datePickerProps}) => {
+export const PopoverDatePicker: React.FC<PopoverDatePickerProps> = (
+    {
+        children,
+        onChange,
+        ...rest
+    }
+) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -35,8 +41,9 @@ export const PopoverDatePicker: React.FC<PopoverDatePickerProps> = ({children, o
                 onClose={handleClose}
             >
                 <DatePicker
+                    {...rest}
                     onChange={handleChange}
-                    {...datePickerProps}
+                    renderInput={(params) => <TextField {...params} />}
                 />
             </Popover>
         </React.Fragment>

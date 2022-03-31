@@ -11,6 +11,7 @@ import ReactGA from 'react-ga';
 import {ThemeProvider} from "@mui/material";
 import {LocalizationProvider} from '@mui/lab';
 import DateAdapter from '@mui/lab/AdapterDateFns';
+import locale from 'date-fns/locale/da'
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider theme={theme}>
-                <LocalizationProvider dateAdapter={DateAdapter}>
+                <LocalizationProvider dateAdapter={DateAdapter} locale={locale}>
                     <Router>
                         <Switch>
                             <Route exact path={Routes.landing} component={LoginPage}/>

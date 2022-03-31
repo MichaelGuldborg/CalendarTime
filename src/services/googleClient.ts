@@ -102,13 +102,9 @@ export const googleClient = {
 const getEventDuration = (event: GoogleCalendarEvent) => {
     if (event?.start?.dateTime === undefined && event?.start?.date === undefined) return 0;
     if (event?.start?.dateTime === undefined) {
-        const time = (new Date(event.end.date).getTime() - new Date(event.start.date).getTime());
-        console.log('time:', time);
-        return time;
+        return (new Date(event.end.date).getTime() - new Date(event.start.date).getTime());
     }
-    const time2 = (new Date(event.end.dateTime).getTime() - new Date(event.start.dateTime).getTime());
-    console.log('time2:', time2);
-    return time2;
+    return (new Date(event.end.dateTime).getTime() - new Date(event.start.dateTime).getTime());
 }
 
 googleClient.initialize();

@@ -36,6 +36,7 @@ const HomePage: React.FC = () => {
         onAllDayOnlyChange,
         setSearch,
         onShowTotalDurationChange,
+        onCountByChange,
         handleFieldsChange,
         refreshEvents,
     }] = useEventQueryState();
@@ -104,17 +105,17 @@ const HomePage: React.FC = () => {
                 </Grid>
 
 
-                <Box sx={() => {
-                    if (showAll) return {
+                <div
+                    style={showAll ? {
                         maxHeight: "2000px",
                         transition: "max-height 1s ease-in",
-                    }
-                    return {
+                        overflow: "hidden"
+                    } : {
                         maxHeight: "0",
                         transition: "max-height 0.50s ease-out",
                         overflow: "hidden"
-                    };
-                }}>
+                    }}
+                >
                     <Divider sx={(theme) => ({
                         marginTop: theme.spacing(3),
                         marginBottom: theme.spacing(3),
@@ -146,6 +147,25 @@ const HomePage: React.FC = () => {
                         </RadioGroup>
                     </InputRow>
 
+                    <InputRow title={'Count by:'}>
+                        <RadioGroup row name="countBy" value={'' + values.countBy} onChange={onCountByChange}>
+                            <FormControlLabel
+                                value='event'
+                                control={<Radio color='primary'/>}
+                                label="Event"
+                            />
+                            <FormControlLabel
+                                value='date'
+                                control={<Radio color='primary'/>}
+                                label="Day"
+                            />
+                            <FormControlLabel
+                                value='title'
+                                control={<Radio color='primary'/>}
+                                label="Title"
+                            />
+                        </RadioGroup>
+                    </InputRow>
 
                     <InputRow title={'Show total duration:'}>
                         <FormControlLabel
@@ -187,7 +207,7 @@ const HomePage: React.FC = () => {
                             setValues={setValues}
                         />
                     </InputRow>
-                </Box>
+                </div>
 
                 <div style={{marginBottom: '-16px', display: 'flex', justifyContent: 'flex-end'}}>
                     <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
@@ -212,12 +232,7 @@ const HomePage: React.FC = () => {
                         borderRadius: 4,
 
                     })}>
-                        <EventTable
-                            additionalFields={additionalFields}
-                            events={values.events}
-                            showTotalDuration={values.showTotalDuration}
-                            totalDuration={values.totalDuration}
-                        />
+                        <EventTable state={values}/>
                     </Box>
                 </Grid>
             </Grid>

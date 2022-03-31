@@ -1,5 +1,5 @@
-import React, {Dispatch, SetStateAction, useState} from "react";
-import {endLastMonth, startLastMonth, toDateKey} from "./functions/dateFormat";
+import React, {Dispatch, SetStateAction, useMemo, useState} from "react";
+import {endMonth, startMonth, toDateKey, toLocalDate} from "./functions/dateFormat";
 import GoogleCalendar from "./models/GoogleCalendar";
 import {useQuery} from "react-query";
 import {googleClient} from "./services/googleClient";
@@ -17,6 +17,7 @@ export interface EventQueryStateFunctions {
     onStartChange: (date: unknown) => void;
     onEndChange: (date: unknown) => void;
     onAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
+    onCountByChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
     setSearch: Dispatch<SetStateAction<string>>;
     onShowTotalDurationChange: SwitchBaseProps["onChange"];
     handleFieldsChange: (p: string) => SwitchBaseProps["onChange"];
@@ -38,6 +39,7 @@ export interface EventQueryFormValues {
     end: Date;
     allDayOnly: boolean;
     showTotalDuration: boolean;
+    countBy: 'event' | 'date' | 'title'
     additionalFields: {
         createdByEmail: boolean;
         createdByName: boolean;
@@ -51,10 +53,11 @@ export interface EventQueryFormValues {
 export const useEventQueryState = (): UseEventQueryState => {
     const [values, setValues] = useState<EventQueryFormValues>({
         selectedCalendars: [],
-        start: startLastMonth,
-        end: endLastMonth,
+        start: startMonth,
+        end: endMonth,
         allDayOnly: false,
         showTotalDuration: true,
+        countBy: 'event',
         additionalFields: {
             createdByEmail: false,
             createdByName: false,
@@ -72,7 +75,7 @@ export const useEventQueryState = (): UseEventQueryState => {
         queryKey: 'calendarList',
         queryFn: () => googleClient.getCalendarList(),
         onSuccess: async (calendars: GoogleCalendar[]) => {
-            console.log('calendars:', calendars)
+            // console.log('calendars:', calendars)
             if (values.selectedCalendars.length) return;
             const initialCalendar = calendars.find(c => c.summary.includes('@')) ?? calendars[0]
             setValues({...values, selectedCalendars: [initialCalendar]});
@@ -84,7 +87,43 @@ export const useEventQueryState = (): UseEventQueryState => {
     const calendars: GoogleCalendar[] = calendarListQuery.data ?? [];
 
     const [events, setEvents] = useState<GoogleCalendarEvent[]>([]);
-    const filteredEvents = events.filter(e => {
+
+    const mergedEvents = useMemo<GoogleCalendarEvent[]>(() => {
+        if (values.countBy === 'date') {
+            return Object.values(events.reduce((result, event) => {
+                const key = new Date(event.start.dateTime).toISOString().split('T')[0];
+                if (result[key] === undefined) result[key] = {
+                    ...event,
+                    summary: toLocalDate(key),
+                    count: 1,
+                }
+                else result[key] = {
+                    ...result[key],
+                    duration: result[key].duration + event.duration,
+                    count: result[key].count + 1,
+                };
+                return result;
+            }, {}));
+        }
+        if (values.countBy === 'title') {
+            return Object.values(events.reduce((result, event) => {
+                const key = event.summary?.trim()?.toLowerCase();
+                if (result[key] === undefined) result[key] = {
+                    ...event,
+                    count: 1,
+                }
+                else result[key] = {
+                    ...result[key],
+                    duration: result[key].duration + event.duration,
+                    count: result[key].count + 1,
+                };
+                return result;
+            }, {}));
+        }
+        return events;
+    }, [events, values]);
+
+    const filteredEvents = mergedEvents.filter(e => {
         if (values.allDayOnly && e.start.date === undefined) return false;
         if (!values.allDayOnly && e.start.dateTime === undefined) return false;
         const summaryLower = e.summary?.toLowerCase() ?? '';
@@ -123,6 +162,14 @@ export const useEventQueryState = (): UseEventQueryState => {
             allDayOnly: v === 'true',
         })
     };
+    const onCountByChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void = (e, v) => {
+        if (v !== 'event' && v !== 'date' && v !== 'title') return;
+        setValues({
+            ...values,
+            countBy: v,
+        })
+    };
+
     const onShowTotalDurationChange: SwitchBaseProps['onChange'] = (e, checked) => {
         setValues({
             ...values,
@@ -146,6 +193,7 @@ export const useEventQueryState = (): UseEventQueryState => {
 
     const fetchEvents = async (values: EventQueryFormValues) => {
         const events = await Promise.all(values.selectedCalendars.map((calendar) => {
+            values.end.setHours(23, 59, 0)
             return googleClient.getEvents({
                 calendarId: calendar?.id,
                 calendarTitle: calendar.name,
@@ -170,6 +218,7 @@ export const useEventQueryState = (): UseEventQueryState => {
         onStartChange,
         onEndChange,
         onAllDayOnlyChange,
+        onCountByChange,
         onShowTotalDurationChange,
         setSearch,
         handleFieldsChange,

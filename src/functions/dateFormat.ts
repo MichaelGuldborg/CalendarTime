@@ -14,13 +14,13 @@ export const dayMillis = 86400000;
 export const twoDayMillis = 172800000;
 export const weekMillis = 604800000;
 
-export const startLastMonth = new Date();
-startLastMonth.setMonth(startLastMonth.getMonth() - 1, 1);
-startLastMonth.setHours(0, 0, 0)
+export const startMonth = new Date();
+startMonth.setMonth(startMonth.getMonth(), 1);
+startMonth.setHours(0, 0, 0)
 
-export const endLastMonth = new Date();
-endLastMonth.setMonth(endLastMonth.getMonth(), 0);
-endLastMonth.setHours(0, 0, 0)
+export const endMonth = new Date();
+endMonth.setMonth(endMonth.getMonth() + 1, 0);
+endMonth.setHours(0, 0, 0)
 
 export const toDateKey = (input: Date | string): string => {
     if (input === undefined) return '';
