@@ -42,8 +42,6 @@ const HomePage: React.FC = () => {
     }] = useEventQueryState();
 
 
-    const additionalFields = Object.keys(values.additionalFields).filter(key => values.additionalFields[key]);
-
     const [showAll, setShowAll] = useState(false);
 
 
