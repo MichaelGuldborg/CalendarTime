@@ -31,5 +31,6 @@ debug.log
 
 apiGoogleconfig.json
 apiGoogleconfig.old.json
+.env
 .env.development
 .env.production
