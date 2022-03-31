@@ -1,6 +1,6 @@
 import React from "react";
-import Popover from "@material-ui/core/Popover";
-import {DatePicker, DatePickerProps} from "@material-ui/pickers";
+import {DatePicker, DatePickerProps} from "@mui/lab";
+import {Popover} from "@mui/material";
 
 type PopoverDatePickerProps = DatePickerProps & {
     children: JSX.Element;
@@ -35,10 +35,6 @@ export const PopoverDatePicker: React.FC<PopoverDatePickerProps> = ({children, o
                 onClose={handleClose}
             >
                 <DatePicker
-                    disableToolbar
-                    variant="static"
-                    format="dd/MM/yyyy"
-                    margin="normal"
                     onChange={handleChange}
                     {...datePickerProps}
                 />

@@ -1,7 +1,7 @@
 import React from 'react';
-import Alert from '@material-ui/lab/Alert';
 import RequestFeedback from "../../models/ResponseFeedback";
-import {Button} from "@material-ui/core";
+import {Button} from "@mui/material";
+import {Alert} from "@mui/lab";
 
 export interface FeedbackDisplayProps {
     error?: string;

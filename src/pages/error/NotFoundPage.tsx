@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
-import {Button} from "@material-ui/core";
 import Routes from "../../constants/Routes";
+import {Button} from "@mui/material";
 
 const NotFoundPage: React.FC = () => {
     const history = useHistory();

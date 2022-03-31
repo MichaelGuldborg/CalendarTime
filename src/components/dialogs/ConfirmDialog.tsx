@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme} from '@material-ui/core';
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme} from '@mui/material';
 
 export interface ConfirmDialogProps {
     title: string;

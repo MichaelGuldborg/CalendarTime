@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import ConfirmDialog from "./ConfirmDialog";
-import TextField from "@material-ui/core/TextField";
+import {TextField} from "@mui/material";
 
 
 export interface TextFieldDialogProps {

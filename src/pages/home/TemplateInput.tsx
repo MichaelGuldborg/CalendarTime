@@ -1,4 +1,3 @@
-import {Button} from "@material-ui/core";
 import DeleteButton from "../../components/buttons/DeleteButton";
 import CloseCircleFillIcon from "remixicon-react/CloseCircleFillIcon";
 import SaveIcon from "remixicon-react/SaveLineIcon";
@@ -6,6 +5,7 @@ import React, {useState} from "react";
 import TextFieldDialog from "../../components/dialogs/TextFieldDialog";
 import {ActionButton} from "../../components/buttons/ActionButton";
 import {EventQueryFormValues} from "../../useEventQueryState";
+import {Button} from "@mui/material";
 
 const TEMPLATE_LIST_KEY = 'templates';
 const getTemplateKey = (name: string) => 'template-' + name.trim();

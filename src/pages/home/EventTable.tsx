@@ -1,22 +1,14 @@
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import {capitalize} from "@material-ui/core";
-import TableBody from "@material-ui/core/TableBody";
 import {toHourMinuteText, toLocalDate, toLocalTime} from "../../functions/dateFormat";
 import React from "react";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import truncate from "../../functions/truncate";
+import {capitalize, styled, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
-const useStyles = makeStyles(() => ({
-    cell: {
-        maxWidth: 160,
-        wordBreak: 'break-all',
-    }
-}))
+
+const StyledCell = styled(TableCell)`
+  max-width: 160px;
+  word-break: break-all;
+`
 
 export interface EventTableProps {
     additionalFields: string[];
@@ -26,7 +18,6 @@ export interface EventTableProps {
 }
 
 export const EventTable: React.FC<EventTableProps> = ({events, additionalFields, showTotalDuration, totalDuration}) => {
-    const classes = useStyles();
     return (
         <TableContainer>
             <Table aria-label="simple table">
@@ -43,12 +34,12 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                 <TableBody>
                     {events.map((event) => (
                         <TableRow key={event.id}>
-                            <TableCell className={classes.cell} component="th" scope="row">
+                            <StyledCell component="th" scope="row">
                                 {event.summary}
-                            </TableCell>
+                            </StyledCell>
                             {additionalFields.map((key) => {
                                 const value = event?.[key];
-                                return <TableCell key={`${event.id}-${key}`} className={classes.cell}>{truncate(value, 180)}</TableCell>;
+                                return <StyledCell key={`${event.id}-${key}`}>{truncate(value, 180)}</StyledCell>;
                             })}
                             <TableCell>{toLocalDate(event.start?.dateTime) || event.start?.date}</TableCell>
                             <TableCell>{toLocalTime(event.start?.dateTime) || 'All-day'}</TableCell>
@@ -57,7 +48,8 @@ export const EventTable: React.FC<EventTableProps> = ({events, additionalFields,
                         </TableRow>
                     ))}
                     {showTotalDuration && <TableRow key={'total'}>
-                        {[0, 1, 2, ...additionalFields].map((e,i) => <TableCell key={'sum-' + i} style={{borderBottom: 'none'}}/>)}
+                        {[0, 1, 2, ...additionalFields].map((e, i) => <TableCell key={'sum-' + i}
+                                                                                 style={{borderBottom: 'none'}}/>)}
                         <TableCell component="th" scope="row" style={{borderBottom: 'none'}}>
                             TOTAL
                         </TableCell>

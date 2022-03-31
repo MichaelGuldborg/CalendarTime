@@ -1,14 +1,9 @@
 import React from "react";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControl from "@material-ui/core/FormControl";
-import {InputLabel} from "@material-ui/core";
-import {SelectInputProps} from "@material-ui/core/Select/SelectInput";
 import NamedValue from "../../models/NamedValue";
 import Identifiable from "../../models/Identifiable";
 import {toIdValueMap} from "../../functions/toIdValueMap";
+import {Checkbox, FormControl, InputLabel, ListItemText, MenuItem, Select} from "@mui/material";
+import {SelectInputProps} from "@mui/material/Select/SelectInput";
 
 
 export interface SelectNamedProps {

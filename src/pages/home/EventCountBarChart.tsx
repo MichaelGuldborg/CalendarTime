@@ -1,9 +1,9 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
 import {Bar} from "react-chartjs-2";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
 import countByLabel, {filterDateCountMap} from "../../functions/countByLabel";
 import {chartBackgroundColors, chartBorderColors} from "../../functions/chartColors";
+import {Box} from "@mui/material";
 
 
 const countByStartDate = (events: GoogleCalendarEvent[]) => countByLabel(events, (e) => {

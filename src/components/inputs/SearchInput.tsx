@@ -1,7 +1,6 @@
 import React from 'react';
 import SearchIcon from 'remixicon-react/Search2LineIcon';
-import Box from '@material-ui/core/Box/Box';
-import {InputAdornment, TextField, TextFieldProps} from "@material-ui/core";
+import {Box, InputAdornment, TextField, TextFieldProps} from "@mui/material";
 
 export interface SearchProps {
     search: string;

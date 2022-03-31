@@ -1,6 +1,7 @@
-import {fade, InputBase, withStyles} from "@material-ui/core";
+import {InputBase, withStyles} from "@mui/material";
 
-const RoundTextField = withStyles((theme) => ({
+// @ts-ignore
+const RoundTextField = withStyles((theme: any) => ({
     root: {
         'label + &': {
             marginTop: theme.spacing(3),
@@ -13,7 +14,7 @@ const RoundTextField = withStyles((theme) => ({
         padding: '4px 12px',
         transition: theme.transitions.create(['border-color', 'box-shadow']),
         '&:focus-within': {
-            boxShadow: `${fade(theme.palette.primary.dark, 0.25)} 0 0 0 0.2rem`,
+            // boxShadow: `${fade(theme.palette.primary.dark, 0.25)} 0 0 0 0.2rem`,
             borderColor: theme.palette.primary.dark,
         },
         '& .remixicon-icon ': {

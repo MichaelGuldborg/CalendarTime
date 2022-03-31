@@ -1,9 +1,8 @@
 import React, {CSSProperties, useState} from 'react';
 import ConfirmDialog from "../dialogs/ConfirmDialog";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from 'remixicon-react/DeleteBinLineIcon'
 import {RemixiconReactIconComponentType} from "remixicon-react";
+import {IconButton, Tooltip} from "@mui/material";
 
 export interface DeleteButtonProps {
     title?: string;

@@ -1,7 +1,5 @@
 import React from "react";
 import FullGridPage from "../../components/containers/FullGridPage";
-import {Button} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import {useHistory} from "react-router";
 import Routes from "../../constants/Routes";
 import {googleClient} from "../../services/googleClient";
@@ -9,31 +7,10 @@ import GoogleIcon from 'remixicon-react/GoogleFillIcon'
 import VersionTag from "../../components/VersionTag";
 import {useMutation} from "react-query";
 import FeedbackDisplay from "../../components/displays/FeedbackDisplay";
-
-const useStyles = makeStyles((theme) => ({
-    title: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 16,
-    },
-    button: {
-        marginBottom: theme.spacing(2),
-        padding: theme.spacing(2, 4),
-        fontSize: 18,
-        fontWeight: 500,
-        '&:hover': {
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.common.white,
-        }
-    }
-}))
+import {Box, Button} from "@mui/material";
 
 
 const LoginPage: React.FC = () => {
-    const classes = useStyles();
     const history = useHistory();
 
     const signInAction = useMutation('signIn', googleClient.signIn, {
@@ -49,14 +26,30 @@ const LoginPage: React.FC = () => {
     return (
         <FullGridPage>
 
-            <div className={classes.title}>
+            <Box sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: 16,
+            }}>
                 <img src={'logo.png'} alt='logo' width='100%'/>
                 Login to visualize your time
-            </div>
+            </Box>
 
             <div style={{flex: 1}}>
                 <Button
-                    className={classes.button}
+                    sx={(theme) => ({
+                        marginBottom: theme.spacing(2),
+                        padding: theme.spacing(2, 4),
+                        fontSize: 18,
+                        fontWeight: 500,
+                        '&:hover': {
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.common.white,
+                        }
+                    })}
                     variant="outlined"
                     onClick={handleLoginClick}
                 >

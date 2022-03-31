@@ -1,32 +1,26 @@
 import React from "react";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        marginBottom: theme.spacing(2),
-        display: 'flex',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 600,
-        marginRight: 16,
-        minWidth: 160,
-        display:'flex',
-        alignItems: 'center',
-    }
-}))
+import {Box} from "@mui/material";
 
 export interface InputRowProps {
     title?: string;
 }
 
-export const InputRow: React.FC<InputRowProps> = ({title,children}) => {
-    const classes = useStyles();
+export const InputRow: React.FC<InputRowProps> = ({title, children}) => {
     return (
-        <div className={classes.root}>
-            <span className={classes.title}>{title}</span>
+        <Box sx={(theme) => ({
+            marginBottom: theme.spacing(2),
+            display: 'flex',
+        })}>
+            <Box sx={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginRight: 16,
+                minWidth: 160,
+                display: 'flex',
+                alignItems: 'center',
+            }}>{title}</Box>
             {children}
-        </div>
+        </Box>
     )
 }
 export default InputRow;

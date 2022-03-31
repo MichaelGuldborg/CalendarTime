@@ -1,71 +1,33 @@
 import React, {useState} from 'react';
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import DateInput from "../../components/inputs/DateInput";
 import {
+    Box,
     capitalize,
     Checkbox,
     Divider,
     FormControlLabel,
     FormGroup,
+    Grid,
+    IconButton,
     Radio,
     RadioGroup,
     Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
 import SelectNamed from "../../components/inputs/SelectNamed";
 import InputRow from "./InputRow";
 import SearchInput from "../../components/inputs/SearchInput";
 import DownloadButton from "./DownloadButton";
 import InformationIcon from 'remixicon-react/InformationLineIcon'
-import Grid from "@material-ui/core/Grid";
 import {useEventQueryState} from "../../useEventQueryState";
 import {EventTable} from "./EventTable";
 import TemplateInput from "./TemplateInput";
 import {ActionButton} from "../../components/buttons/ActionButton";
-import IconButton from "@material-ui/core/IconButton";
 import ArrowUpIcon from "remixicon-react/ArrowUpSLineIcon";
 import ArrowDownIcon from "remixicon-react/ArrowDownSLineIcon";
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    toolbar: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: theme.spacing(4, 0, 0, 0),
-        padding: theme.spacing(2, 6),
-        // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
-    },
-    divider: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(3),
-    },
-    paper: {
-        margin: theme.spacing(4, 6),
-        // position: 'relative',
-        // transition: 'all 150ms cubic-bezier(0.694, 0.0482, 0.335, 1)',
-        boxShadow: '4px 4px 24px 24px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
-        // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
-        // overflow: 'hidden',
-        borderRadius: 4,
-    },
-    showAll: {
-        maxHeight: "2000px",
-        transition: "max-height 1s ease-in",
-    },
-    hideAll: {
-        maxHeight: "0",
-        transition: "max-height 0.50s ease-out",
-        overflow: "hidden"
-    }
-}))
-
-
 const HomePage: React.FC = () => {
-    const classes = useStyles();
     const [values, {
         setValues,
         onCalendarChange,
@@ -85,9 +47,18 @@ const HomePage: React.FC = () => {
 
 
     return (
-        <div className={classes.root}>
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+        }}>
 
-            <div className={classes.toolbar}>
+            <Box sx={(theme) => ({
+                display: 'flex',
+                flexDirection: 'column',
+                margin: theme.spacing(4, 0, 0, 0),
+                padding: theme.spacing(2, 6),
+                // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
+            })}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
                         <SelectNamed
@@ -133,8 +104,21 @@ const HomePage: React.FC = () => {
                 </Grid>
 
 
-                <div className={showAll ? classes.showAll : classes.hideAll}>
-                    <Divider className={classes.divider}/>
+                <Box sx={() => {
+                    if (showAll) return {
+                        maxHeight: "2000px",
+                        transition: "max-height 1s ease-in",
+                    }
+                    return {
+                        maxHeight: "0",
+                        transition: "max-height 0.50s ease-out",
+                        overflow: "hidden"
+                    };
+                }}>
+                    <Divider sx={(theme) => ({
+                        marginTop: theme.spacing(3),
+                        marginBottom: theme.spacing(3),
+                    })}/>
 
 
                     <InputRow title={'Search filter:'}>
@@ -192,14 +176,18 @@ const HomePage: React.FC = () => {
                         </FormGroup>
                     </InputRow>
 
-                    <Divider className={classes.divider}/>
+                    <Divider sx={(theme) => ({
+                        marginTop: theme.spacing(3),
+                        marginBottom: theme.spacing(3),
+                    })}/>
+
                     <InputRow title={'Query templates:'}>
                         <TemplateInput
                             values={values}
                             setValues={setValues}
                         />
                     </InputRow>
-                </div>
+                </Box>
 
                 <div style={{marginBottom: '-16px', display: 'flex', justifyContent: 'flex-end'}}>
                     <Tooltip title={showAll ? 'Hide advanced options' : 'Show advanced options'}>
@@ -209,22 +197,31 @@ const HomePage: React.FC = () => {
                     </Tooltip>
                 </div>
 
-            </div>
+            </Box>
 
 
             <Grid container>
                 <Grid item xs={12}>
-                    <div className={classes.paper}>
+                    <Box sx={(theme) => ({
+                        margin: theme.spacing(4, 6),
+                        // position: 'relative',
+                        // transition: 'all 150ms cubic-bezier(0.694, 0.0482, 0.335, 1)',
+                        boxShadow: '4px 4px 24px 24px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
+                        // boxShadow: '4px 4px 8px 3px rgb(152 162 179 / 15%), 0 2px 2px -1px rgb(152 162 179 / 30%)',
+                        // overflow: 'hidden',
+                        borderRadius: 4,
+
+                    })}>
                         <EventTable
                             additionalFields={additionalFields}
                             events={values.events}
                             showTotalDuration={values.showTotalDuration}
                             totalDuration={values.totalDuration}
                         />
-                    </div>
+                    </Box>
                 </Grid>
             </Grid>
-        </div>
+        </Box>
     );
 };
 

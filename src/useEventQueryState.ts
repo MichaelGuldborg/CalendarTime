@@ -4,19 +4,18 @@ import GoogleCalendar from "./models/GoogleCalendar";
 import {useQuery} from "react-query";
 import {googleClient} from "./services/googleClient";
 import GoogleCalendarEvent from "./models/GoogleCalendarEvent";
-import {SelectInputProps} from "@material-ui/core/Select/SelectInput";
-import {DatePickerProps} from "@material-ui/pickers";
-import {SwitchBaseProps} from "@material-ui/core/internal/SwitchBase";
-import {MaterialUiPickersDate} from "@material-ui/pickers/typings/date";
+import {SelectChangeEvent, SelectInputProps} from "@mui/material/Select/SelectInput";
+import {DatePickerProps} from "@mui/lab";
+import {SwitchBaseProps} from "@mui/material/internal/SwitchBase";
 
 
 export type UseEventQueryState = [EventQueryState, EventQueryStateFunctions];
 
 export interface EventQueryStateFunctions {
     setValues: (values: EventQueryFormValues) => void;
-    onCalendarChange: (event: React.ChangeEvent<{ name?: string; value: unknown }>, child: React.ReactNode) => void;
-    onStartChange: (date: MaterialUiPickersDate) => void;
-    onEndChange: (date: MaterialUiPickersDate) => void;
+    onCalendarChange: (event: SelectChangeEvent<unknown>, child: React.ReactNode) => void;
+    onStartChange: (date: unknown) => void;
+    onEndChange: (date: unknown) => void;
     onAllDayOnlyChange: (event: React.ChangeEvent<HTMLInputElement>, value: string) => void;
     setSearch: Dispatch<SetStateAction<string>>;
     onShowTotalDurationChange: SwitchBaseProps["onChange"];
@@ -108,13 +107,13 @@ export const useEventQueryState = (): UseEventQueryState => {
     }
     const onStartChange: DatePickerProps["onChange"] = async (date) => {
         if (date === null || date === undefined) return;
-        const newValues = {...values, start: date};
+        const newValues = {...values, start: date as Date};
         setValues(newValues)
         await fetchEvents(newValues);
     }
     const onEndChange: DatePickerProps["onChange"] = async (date) => {
         if (date === null || date === undefined) return;
-        const newValues = {...values, end: date};
+        const newValues = {...values, end: date as Date};
         setValues(newValues)
         await fetchEvents(newValues);
     }

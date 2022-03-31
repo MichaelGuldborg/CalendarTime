@@ -3,8 +3,8 @@ import {Pie} from "react-chartjs-2";
 import {chartBackgroundColors, chartBorderColors} from "../../functions/chartColors";
 import countByLabel from "../../functions/countByLabel";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
-import Box from "@material-ui/core/Box";
 import {hourMillis} from "../../functions/dateFormat";
+import {Box} from "@mui/material";
 
 
 export const EventCalendarPieChart: React.FC<{ events: GoogleCalendarEvent[] }> = ({events}) => {
