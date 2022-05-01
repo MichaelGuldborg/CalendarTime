@@ -4,13 +4,13 @@ import {
     Box,
     capitalize,
     Checkbox,
-    Divider, Drawer,
+    Divider,
     FormControlLabel,
     FormGroup,
     Grid,
     IconButton,
     Radio,
-    RadioGroup,
+    RadioGroup, Theme,
     Tooltip
 } from "@mui/material";
 import RefreshIcon from "remixicon-react/RefreshLineIcon";
@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
             flexDirection: 'column',
         }}>
 
-            <Box sx={(theme) => ({
+            <Box sx={(theme: Theme) => ({
                 display: 'flex',
                 flexDirection: 'column',
                 margin: theme.spacing(4, 0, 0, 0),
@@ -75,8 +75,8 @@ const HomePage: React.FC = () => {
                     <Grid item xs={12} sm={12} md={4} lg={3} xl={2} style={{display: 'flex'}}>
                         <DateInput value={values.end} onChange={onEndChange}/>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={3} xl={6}
-                          style={{display: 'flex', justifyContent: 'flex-end'}}
+                    <Grid item xs={12} sm={12} md={12} lg={3} xl={6} spacing={2}
+                          style={{display: 'flex', gap: '12px'}}
                     >
                         <DownloadButton
                             events={values.events}
@@ -85,7 +85,7 @@ const HomePage: React.FC = () => {
                             filename={values.filename}
                             format={'csv'}
                         />
-                        <div style={{width: 16}}/>
+                        {/*<div style={{width: 16}}/>*/}
                         <DownloadButton
                             events={values.events}
                             showTotalDuration={values.showTotalDuration}
@@ -93,7 +93,14 @@ const HomePage: React.FC = () => {
                             filename={values.filename}
                             format={'pdf'}
                         />
-                        <div style={{width: 16}}/>
+                        <DownloadButton
+                          events={values.events}
+                          showTotalDuration={values.showTotalDuration}
+                          totalDuration={values.totalDuration}
+                          filename={values.filename}
+                          format={'html'}
+                        />
+                        {/*<div style={{width: 16}}/>*/}
                         <ActionButton
                             text='REFRESH EVENTS'
                             icon={RefreshIcon}
