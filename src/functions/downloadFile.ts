@@ -2,6 +2,10 @@ export function downloadCSVFile(fileName: string, content: string,) {
     return downloadFile(fileName, 'text/csv;charset=utf-8;', content);
 }
 
+export function downloadHTMLFile(fileName: string, content: string) {
+    return downloadFile(fileName, 'text/html;charset=utf-8;', content);
+}
+
 export function downloadFile(fileName: string, type: string, content: string,) {
     const blob = new Blob([content], {type: type})
     if (navigator.msSaveBlob) { // IE 10+

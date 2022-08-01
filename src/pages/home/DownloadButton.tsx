@@ -2,7 +2,7 @@ import {toHourMinuteText, toLocalDate, toLocalTime} from "../../functions/dateFo
 import React from "react";
 import GoogleCalendarEvent from "../../models/GoogleCalendarEvent";
 import FileDownloadIcon from 'remixicon-react/FileDownloadLineIcon'
-import {downloadCSVFile} from "../../functions/downloadFile";
+import {downloadCSVFile, downloadHTMLFile} from "../../functions/downloadFile";
 import {ActionButton} from "../../components/buttons/ActionButton";
 import pdfMakeX from 'pdfmake/build/pdfmake.js';
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -38,6 +38,8 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
                 return downloadPDF()
             } else if (format === "sheets") {
                 return googleClient.createSheet('TESTAAAAAAA');
+            } else if (format === "html") {
+                return downloadHTML();
             } else {
                 return downloadHTML();
             }
@@ -102,11 +104,46 @@ export const DownloadButton: React.FC<DownloadButtonProps> =
             }).download(filename + '.pdf');
         }
 
-
         const downloadHTML = () => {
-
+            const content =(
+                `<div>
+                    <h1>${filename}</h1>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Duration</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        ${events.map(e => {
+                            return `
+                                <tr>
+                                    <td>${e.summary}</td>
+                                    <td>${toLocalDate(e.start.dateTime)}</td>
+                                    <td>${toLocalTime(e.start.dateTime)}</td>
+                                    <td>${toLocalTime(e.end.dateTime)}</td>
+                                    <td>${toHourMinuteText(e.duration)}</td>
+                                </tr>
+                            `
+                        })}
+                        ${showTotalDuration && `
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td>${toHourMinuteText(totalDuration)}</td>
+                            </tr>
+                        `}
+                        </tbody>
+                    </table>
+                </div>`);
+            downloadHTMLFile(filename + '.html', content);
         }
-
 
         return (
             <ActionButton
