@@ -4,7 +4,7 @@ import {
     Box,
     capitalize,
     Checkbox,
-    Divider, Drawer,
+    Divider,
     FormControlLabel,
     FormGroup,
     Grid,

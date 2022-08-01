@@ -34,3 +34,4 @@ apiGoogleconfig.old.json
 .env
 .env.development
 .env.production
+.env.old

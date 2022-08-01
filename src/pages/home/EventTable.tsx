@@ -20,7 +20,7 @@ export const EventTable: React.FC<EventTableProps> = ({state}) => {
     }, {
         id: 'created',
         label: 'Date',
-        render: (e) => toLocalDate(e.created?.dateTime) || e.start?.date,
+        render: (e) => toLocalDate(e.created) || e.start?.date,
         hidden: state.countBy !== 'event'
     }, {
         id: 'start',
