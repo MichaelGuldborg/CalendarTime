@@ -192,8 +192,8 @@ export const useEventQueryState = (): UseEventQueryState => {
     }
 
     const fetchEvents = async (values: EventQueryFormValues) => {
-        const events = await Promise.all(values.selectedCalendars.map((calendar) => {
-            values.end.setHours(23, 59, 0)
+        values.end.setHours(23, 59, 0)
+        const calendarEvents = await Promise.all(values.selectedCalendars.map((calendar) => {
             return googleClient.getEvents({
                 calendarId: calendar?.id,
                 calendarTitle: calendar.name,
@@ -201,7 +201,9 @@ export const useEventQueryState = (): UseEventQueryState => {
                 timeMax: values.end
             });
         }))
-        setEvents(events.flat());
+        const events = calendarEvents.flat();
+        console.log(events);
+        setEvents(events);
     }
 
 

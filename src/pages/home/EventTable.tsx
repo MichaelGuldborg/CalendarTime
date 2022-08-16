@@ -20,7 +20,7 @@ export const EventTable: React.FC<EventTableProps> = ({state}) => {
     }, {
         id: 'created',
         label: 'Date',
-        render: (e) => toLocalDate(e.created) || e.start?.date,
+        render: (e) => toLocalDate(e.start?.dateTime) || e.start?.date,
         hidden: state.countBy !== 'event'
     }, {
         id: 'start',
@@ -72,6 +72,8 @@ export const EventTable: React.FC<EventTableProps> = ({state}) => {
         <BaseTable<GoogleCalendarEvent>
             elements={state.events}
             heads={fields}
+            initialOrder={'asc'}
+            initialOrderKey={'start'}
         >
             {state.showTotalDuration && <TableRow key={'total'}>
                 {fields.filter(e => !e.hidden).slice(2).map((e, i) => {
